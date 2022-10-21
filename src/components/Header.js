@@ -29,6 +29,7 @@ export default function Header() {
       <StHeader>
         <StHeaderSpan>H99Auction</StHeaderSpan>
         <StHeaderLoginBtn onClick={() => navigate('login')}>로그인</StHeaderLoginBtn>
+        <div></div>
       </StHeader>
     </>
   );
