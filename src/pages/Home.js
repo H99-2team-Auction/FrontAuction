@@ -1,7 +1,9 @@
 import styled from 'styled-components';
+import { useNavigate } from 'react-router-dom';
 
 const StPostContainer = styled.div`
   margin: 0 auto;
+  cursor: pointer;
 `;
 
 const StPostBox = styled.div`
@@ -60,8 +62,9 @@ const StBodyBox = styled.div`
 `;
 
 export default function Home() {
+  const navigate = useNavigate();
   return (
-    <StPostContainer>
+    <StPostContainer onClick={() => navigate('detail')}>
       <StPostBox>
         <StPostHeader>이상한 펭귄 데려가세요.</StPostHeader>
         <StPostImage src={`https://upload.wikimedia.org/wikipedia/ko/thumb/d/d4/%ED%8E%AD%EC%88%98.jpg/300px-%ED%8E%AD%EC%88%98.jpg`} />
