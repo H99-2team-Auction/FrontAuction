@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import Home from '../pages/Home';
 import Login from '../pages/Login';
 import SignUp from '../pages/SignUp';
+import Detail from '../pages/Detail';
 export default function Router() {
   return (
     <>
@@ -12,6 +13,7 @@ export default function Router() {
         <Route path='/' element={<Home />} />
         <Route path='/login' element={<Login />} />
         <Route path='/signup' element={<SignUp />} />
+        <Route path='/detail' element={<Detail />} />
       </Routes>
     </>
   );
