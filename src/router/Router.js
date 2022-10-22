@@ -7,13 +7,12 @@ import SignUp from '../pages/SignUp';
 export default function Router() {
   return (
     <>
-      <Header />;
+      <Header />
       <Routes>
         <Route path='/' element={<Home />} />
         <Route path='/login' element={<Login />} />
         <Route path='/signup' element={<SignUp />} />
       </Routes>
-      ;
     </>
   );
 }
