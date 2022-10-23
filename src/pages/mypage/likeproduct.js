@@ -61,7 +61,7 @@ const StBodyBox = styled.div`
   white-space: nowrap;
 `;
 
-export default function Home() {
+export default function LikeProduct() {
   const navigate = useNavigate();
   return (
     <StPostContainer>
