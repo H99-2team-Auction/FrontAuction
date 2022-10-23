@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 
 const StPostContainer = styled.div`
   margin: 0 auto;
-  cursor: pointer;
 `;
 
 const StPostBox = styled.div`
@@ -11,6 +10,7 @@ const StPostBox = styled.div`
   border-radius: 5px;
   margin-top: 30px;
   width: 471px;
+  cursor: pointer;
 `;
 
 const StPostHeader = styled.div`
@@ -64,8 +64,8 @@ const StBodyBox = styled.div`
 export default function Home() {
   const navigate = useNavigate();
   return (
-    <StPostContainer onClick={() => navigate('detail')}>
-      <StPostBox>
+    <StPostContainer>
+      <StPostBox onClick={() => navigate('detail')}>
         <StPostHeader>이상한 펭귄 데려가세요.</StPostHeader>
         <StPostImage src={`https://upload.wikimedia.org/wikipedia/ko/thumb/d/d4/%ED%8E%AD%EC%88%98.jpg/300px-%ED%8E%AD%EC%88%98.jpg`} />
         <StPriceBox>

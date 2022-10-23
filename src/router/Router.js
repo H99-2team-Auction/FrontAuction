@@ -6,6 +6,8 @@ import SignUp from '../pages/SignUp';
 import Detail from '../pages/Detail';
 import Mypage from '../pages/Mypage';
 import SuccessBid from '../pages/mypage/Successbid';
+import Bidding from '../pages/mypage/Bidding';
+import LikeProduct from '../pages/mypage/Likeproduct';
 
 export default function Router() {
   return (
@@ -18,6 +20,8 @@ export default function Router() {
         <Route path='/detail' element={<Detail />} />
         <Route path='/mypage' element={<Mypage />}>
           <Route path='successbid' element={<SuccessBid />} />
+          <Route path='bidding' element={<Bidding />} />
+          <Route path='likeproduct' element={<LikeProduct />} />
         </Route>
       </Routes>
     </>
