@@ -64,7 +64,7 @@ export default function Header() {
       <StHeaderRightBar>
         <StHeaderId>ID</StHeaderId>
         <StHeaderMyPage onClick={() => navigate('mypage')}>마이페이지</StHeaderMyPage>
-        <StHeaderPostUp>상품등록</StHeaderPostUp>
+        <StHeaderPostUp onClick={() => navigate('productregist')}>상품등록</StHeaderPostUp>
         <StHeaderLogout>로그아웃</StHeaderLogout>
         <StHeaderLoginBtn onClick={() => navigate('login')}>로그인</StHeaderLoginBtn>
       </StHeaderRightBar>
