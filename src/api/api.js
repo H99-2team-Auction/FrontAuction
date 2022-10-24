@@ -7,9 +7,9 @@ const api = axios.create({
   headers: { Access_Token: token },
 });
 
-// localhost:3001/todos
-export function ReadData() {
-  return api.get('/product/').then((response) => {
+export async function ReadData() {
+  return await api('/product/').then((response) => {
+    console.log('aaa', response.data);
     return response.data;
   });
 }

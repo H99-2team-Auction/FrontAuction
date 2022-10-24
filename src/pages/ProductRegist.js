@@ -1,11 +1,18 @@
 import styled from 'styled-components';
 import { useState } from 'react';
-import { useMutation } from '@tanstack/react-query';
-import { RequestProductRegist } from '../api/api';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { ReadData, RequestProductRegist } from '../api/api';
 
 export default function ProductRegist() {
   const [productInfo, setProductInfo] = useState('');
   const [image, setImage] = useState();
+
+  const { data } = useQuery(ReadData, {
+    onSuccess: (temp) => {
+      console.log('ccc', temp);
+    },
+  });
+  console.log('eee', data);
 
   const onTitleChangeHandler = (event) => {
     const { name, value } = event.target;
