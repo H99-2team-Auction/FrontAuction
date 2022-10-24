@@ -1,5 +1,22 @@
 import styled from 'styled-components';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+
+export default function Header() {
+  const navigate = useNavigate();
+
+  return (
+    <StHeader>
+      <StHeaderSpan onClick={() => navigate('/')}>H99Auction</StHeaderSpan>
+      <StHeaderRightBar>
+        <StHeaderId>ID</StHeaderId>
+        <StHeaderMyPage onClick={() => navigate('mypage')}>마이페이지</StHeaderMyPage>
+        <StHeaderPostUp onClick={() => navigate('productregist')}>상품등록</StHeaderPostUp>
+        <StHeaderLogout>로그아웃</StHeaderLogout>
+        <StHeaderLoginBtn onClick={() => navigate('login')}>로그인</StHeaderLoginBtn>
+      </StHeaderRightBar>
+    </StHeader>
+  );
+}
 
 const StHeader = styled.div`
   background: #04343e;
@@ -55,19 +72,3 @@ const StHeaderId = styled.span`
   margin-right: 15px;
   cursor: default;
 `;
-
-export default function Header() {
-  const navigate = useNavigate();
-  return (
-    <StHeader>
-      <StHeaderSpan onClick={() => navigate('/')}>H99Auction</StHeaderSpan>
-      <StHeaderRightBar>
-        <StHeaderId>ID</StHeaderId>
-        <StHeaderMyPage onClick={() => navigate('mypage')}>마이페이지</StHeaderMyPage>
-        <StHeaderPostUp onClick={() => navigate('productregist')}>상품등록</StHeaderPostUp>
-        <StHeaderLogout>로그아웃</StHeaderLogout>
-        <StHeaderLoginBtn onClick={() => navigate('login')}>로그인</StHeaderLoginBtn>
-      </StHeaderRightBar>
-    </StHeader>
-  );
-}
