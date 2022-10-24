@@ -1,4 +1,93 @@
 import styled from 'styled-components';
+import { useState } from 'react';
+import { useMutation } from '@tanstack/react-query';
+import { RequestProductRegist } from '../api/api';
+
+export default function ProductRegist() {
+  const [productInfo, setProductInfo] = useState('');
+  const [image, setImage] = useState();
+
+  const onTitleChangeHandler = (event) => {
+    const { name, value } = event.target;
+
+    setProductInfo({ ...productInfo, [name]: value });
+  };
+
+  const onBodyChangeHandler = (event) => {
+    const { name, value } = event.target;
+    setProductInfo({ ...productInfo, [name]: value });
+    console.log(productInfo);
+  };
+
+  const onLowPriceChangeHandler = (event) => {
+    const { name, value } = event.target;
+    setProductInfo({ ...productInfo, [name]: parseInt(value) });
+    console.log(productInfo);
+  };
+
+  const onImageHandler = (event) => {
+    event.preventDefault();
+    const filerReader = new FileReader();
+
+    if (event.target.files[0]) {
+      filerReader.readAsDataURL(event.target.files[0]);
+    }
+
+    filerReader.onload = () => {
+      setImage({ image: event.target.files[0] });
+    };
+    setImage(() => event.target.files[0]);
+    console.log(image);
+  };
+
+  const { mutate } = useMutation(RequestProductRegist, {
+    onSuccess: () => {},
+  });
+
+  const onSubmitData = (event) => {
+    const formData = new FormData();
+    formData.append('title', productInfo.title);
+    formData.append('content', productInfo.content);
+    formData.append('lowprice', productInfo.lowprice);
+    formData.append('productdata'.productInfo);
+    formData.append('image', image.image);
+    console.log('formdata', formData);
+    console.log(productInfo);
+    mutate(formData);
+  };
+
+  return (
+    <ProductContainer>
+      <ProductBox>
+        <ProductTitleBox>
+          <ProductTitleSpan>제목 : </ProductTitleSpan>
+          <ProductTitleInput type={'text'} name='title' onChange={onTitleChangeHandler} placeholder={'제목 입력...'}></ProductTitleInput>
+        </ProductTitleBox>
+        <StLine />
+        <ProductBody type={'text'} name='content' onChange={onBodyChangeHandler} placeholder={'내용 입력...'}></ProductBody>
+        <StLine />
+        <ProductMinInputBox>
+          <ProductMinSpan>최저 입찰가 : </ProductMinSpan>
+          <ProductMinInput type='number' name='lowPrice' onChange={onLowPriceChangeHandler} placeholder={'최저가 입력(숫자만 가능)'}></ProductMinInput>
+        </ProductMinInputBox>
+        <StLine />
+        <ProductImgBox>
+          <ProductImgSpan>사진 업로드 : </ProductImgSpan>
+          <ProductImgInput type='file' name='image' accept='image/*' onChange={onImageHandler}></ProductImgInput>
+        </ProductImgBox>
+        <StLine />
+        <ProductSubmit
+          onClick={() => {
+            onSubmitData();
+          }}
+        >
+          등록하기
+        </ProductSubmit>
+      </ProductBox>
+    </ProductContainer>
+  );
+}
+
 const ProductContainer = styled.div`
   margin: auto 0;
 `;
@@ -86,30 +175,3 @@ const ProductSubmit = styled.button`
   height: 40px;
   width: 100px;
 `;
-
-export default function ProductRegist() {
-  return (
-    <ProductContainer>
-      <ProductBox>
-        <ProductTitleBox>
-          <ProductTitleSpan>제목 : </ProductTitleSpan>
-          <ProductTitleInput></ProductTitleInput>
-        </ProductTitleBox>
-        <StLine />
-        <ProductBody></ProductBody>
-        <StLine />
-        <ProductMinInputBox>
-          <ProductMinSpan>최저 입찰가 : </ProductMinSpan>
-          <ProductMinInput type='number'></ProductMinInput>
-        </ProductMinInputBox>
-        <StLine />
-        <ProductImgBox>
-          <ProductImgSpan>사진 업로드 : </ProductImgSpan>
-          <ProductImgInput type='file' accept='image/*'></ProductImgInput>
-        </ProductImgBox>
-        <StLine />
-        <ProductSubmit>등록하기</ProductSubmit>
-      </ProductBox>
-    </ProductContainer>
-  );
-}
