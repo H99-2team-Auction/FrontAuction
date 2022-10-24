@@ -1,68 +1,65 @@
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
-import { ReadData } from '../api/api';
 import { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { RequestLogin } from '../api/api';
+import axios from 'axios';
 
 export default function Login() {
+  // 라우터 navigate
   const navigate = useNavigate();
 
+  // ID, PASSWORD 담는 useState
   const [userInfo, setUserInfo] = useState('');
-  // const { data } = useQuery(['myData'], ReadData, {
-  //   onSuccess: (temp) => {
-  //     console.log('___', temp);
-  //   },
-  // });
 
+  // 로그인 실패시 에러메세지 출력 useState
+  const [ErrorMsg, setErrorMsg] = useState('');
+
+  // ID INPUT
   const onIdChangeHandler = (event) => {
     const { name, value } = event.target;
     console.log({ [name]: value });
     setUserInfo({ ...userInfo, [name]: value });
   };
-
+  // PASSWORD INPUT
   const onPasswordChangeHandler = (event) => {
     const { name, value } = event.target;
     setUserInfo({ ...userInfo, [name]: value });
   };
 
-  const { mutate } = useMutation(RequestLogin, {
-    onSuccess: () => {},
+  // 로그인 정보 서버로 보내기 / 토큰 담기
+  const { mutate, isError } = useMutation(RequestLogin, {
+    onSuccess: (response) => {
+      console.log('___', response);
+      localStorage.setItem('Access_Token', response.headers.access_token);
+      localStorage.setItem('Refresh_Token', response.headers.refresh_token);
+      localStorage.setItem('expiredTime', response.data.cur_time);
+      axios.defaults.headers.common['x-access-token'] = response.data.data.accessToken;
+      onLoginSuccess();
+    },
+    onError: () => {
+      setErrorMsg('아이디 또는 비밀번호가 일치하지 않습니다.');
+    },
   });
 
+  // 서버로 데이터 전달 함수
   const AdduserInfo = (userInfo) => {
     mutate(userInfo);
   };
 
-  // const readtoken = () => {
-  //   console.log(localStorage.getItem('Access_Token'));
-  // };
-
-  // const updatetoken = () => {
-  //   localStorage.removeItem('Access_Token');
-  // };
+  // 로그인 성공시 함수
+  const onLoginSuccess = () => {
+    alert('로그인 성공');
+    navigate('/');
+  };
 
   return (
     <StLoginBoxContainer>
-      {/* <button
-        onClick={() => {
-          readtoken();
-        }}
-      >
-        읽기
-      </button>
-      <button
-        onClick={() => {
-          updatetoken();
-        }}
-      >
-        지우기
-      </button> */}
       <StLoginPTag>ID</StLoginPTag>
       <StLoginIdInput type={'text'} name='username' onChange={onIdChangeHandler}></StLoginIdInput>
       <StLoginPTag>PASSWORD</StLoginPTag>
       <StLoginPasswordInput type={'password'} name='password' onChange={onPasswordChangeHandler}></StLoginPasswordInput>
+      <StSignErrorBar>{ErrorMsg}</StSignErrorBar>
       <StloginBtn
         onClick={() => {
           AdduserInfo(userInfo);
@@ -74,10 +71,9 @@ export default function Login() {
     </StLoginBoxContainer>
   );
 }
-
 const StLoginBoxContainer = styled.div`
   width: 400px;
-  height: 300px;
+  height: 350px;
   border: 1px solid black;
   border-radius: 15px;
   margin-top: 40px;
@@ -122,4 +118,8 @@ const StSignUpBtn = styled.button`
   background-color: #2e3e7c;
   color: white;
   font-size: 25px;
+`;
+
+const StSignErrorBar = styled.p`
+  margin-top: 14px;
 `;
