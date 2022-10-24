@@ -27,9 +27,12 @@ export default function SignUp() {
     console.log('|||', userInfo);
   };
 
-  const { mutate } = useMutation(RequestSignUp, {
+  const { mutate, isError, error } = useMutation(RequestSignUp, {
     onSuccess: () => {},
   });
+
+  console.log('isError', isError);
+  console.log('Error', error);
 
   const AdduserInfo = (userInfo) => {
     mutate(userInfo);

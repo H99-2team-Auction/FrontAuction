@@ -35,8 +35,30 @@ export default function Login() {
     mutate(userInfo);
   };
 
+  // const readtoken = () => {
+  //   console.log(localStorage.getItem('Access_Token'));
+  // };
+
+  // const updatetoken = () => {
+  //   localStorage.removeItem('Access_Token');
+  // };
+
   return (
     <StLoginBoxContainer>
+      {/* <button
+        onClick={() => {
+          readtoken();
+        }}
+      >
+        읽기
+      </button>
+      <button
+        onClick={() => {
+          updatetoken();
+        }}
+      >
+        지우기
+      </button> */}
       <StLoginPTag>ID</StLoginPTag>
       <StLoginIdInput type={'text'} name='username' onChange={onIdChangeHandler}></StLoginIdInput>
       <StLoginPTag>PASSWORD</StLoginPTag>
