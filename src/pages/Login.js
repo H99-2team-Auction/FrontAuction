@@ -4,8 +4,15 @@ import { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { RequestLogin } from '../api/api';
 import axios from 'axios';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import { isLogin } from '../store/store';
+import { ID } from '../store/store';
 
 export default function Login() {
+  const [isLoging, setIsLoging] = useRecoilState(isLogin);
+  const [recoilLoginId, setRecoilLoginId] = useRecoilState(ID);
+
+  const [myId, setMyId] = useState();
   // 라우터 navigate
   const navigate = useNavigate();
 
@@ -20,6 +27,7 @@ export default function Login() {
     const { name, value } = event.target;
     console.log({ [name]: value });
     setUserInfo({ ...userInfo, [name]: value });
+    setMyId(value);
   };
   // PASSWORD INPUT
   const onPasswordChangeHandler = (event) => {
@@ -35,6 +43,7 @@ export default function Login() {
       localStorage.setItem('Refresh_Token', response.headers.refresh_token);
       localStorage.setItem('expiredTime', response.data.cur_time);
       axios.defaults.headers.common['x-access-token'] = response.data.data.accessToken;
+
       onLoginSuccess();
     },
     onError: () => {
@@ -49,6 +58,8 @@ export default function Login() {
 
   // 로그인 성공시 함수
   const onLoginSuccess = () => {
+    setRecoilLoginId(myId);
+    setIsLoging(true);
     alert('로그인 성공');
     navigate('/');
   };

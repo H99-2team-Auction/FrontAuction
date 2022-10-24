@@ -1,18 +1,34 @@
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import { isLogin, ID } from '../store/store';
 
 export default function Header() {
+  const [isLoging, setIsLoging] = useRecoilState(isLogin);
+  const [recoilHeaderId, setRecoilHeaderId] = useRecoilState(ID);
+
+  console.log(isLoging);
+  useEffect(() => {}, [isLoging]);
   const navigate = useNavigate();
+
+  const onLogout = () => {
+    localStorage.removeItem('Access_Token');
+    localStorage.removeItem('Refresh_Token');
+    setIsLoging(false);
+    alert('로그아웃 완료');
+    navigate('/');
+  };
 
   return (
     <StHeader>
       <StHeaderSpan onClick={() => navigate('/')}>H99Auction</StHeaderSpan>
       <StHeaderRightBar>
-        <StHeaderId>ID</StHeaderId>
-        <StHeaderMyPage onClick={() => navigate('mypage')}>마이페이지</StHeaderMyPage>
-        <StHeaderPostUp onClick={() => navigate('productregist')}>상품등록</StHeaderPostUp>
-        <StHeaderLogout>로그아웃</StHeaderLogout>
-        <StHeaderLoginBtn onClick={() => navigate('login')}>로그인</StHeaderLoginBtn>
+        {isLoging === true ? <StHeaderId>{recoilHeaderId}님 반갑습니다.</StHeaderId> : null}
+        {isLoging === true ? <StHeaderMyPage onClick={() => navigate('mypage')}>마이페이지</StHeaderMyPage> : null}
+        {isLoging === true ? <StHeaderPostUp onClick={() => navigate('productregist')}>상품등록</StHeaderPostUp> : null}
+        {isLoging === true ? <StHeaderLogout onClick={onLogout}>로그아웃</StHeaderLogout> : null}
+        {isLoging === false ? <StHeaderLoginBtn onClick={() => navigate('login')}>로그인</StHeaderLoginBtn> : null}
       </StHeaderRightBar>
     </StHeader>
   );
