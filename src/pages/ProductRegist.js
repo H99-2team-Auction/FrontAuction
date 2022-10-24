@@ -46,14 +46,18 @@ export default function ProductRegist() {
 
   const onSubmitData = (event) => {
     const formData = new FormData();
-    formData.append('title', productInfo.title);
-    formData.append('content', productInfo.content);
-    formData.append('lowprice', productInfo.lowprice);
-    formData.append('productdata'.productInfo);
-    formData.append('image', image.image);
-    console.log('formdata', formData);
+    // formData.append('title', productInfo.title);
+    // formData.append('content', productInfo.content);
+    // formData.append('lowprice', productInfo.lowprice);
+    // formData.append('image', image.image);
+    // console.log('image', image.image);
+    // setProductInfo(image.image);
+    // console.log('aaa', productInfo);
+    // console.log('formdata', formData);
+    // console.log(productInfo);
+    // mutate(formData);
     console.log(productInfo);
-    mutate(formData);
+    mutate(productInfo);
   };
 
   return (
