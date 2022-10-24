@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { RequestSignUp } from '../api/api';
@@ -36,6 +36,7 @@ export default function SignUp() {
 
   const AdduserInfo = (userInfo) => {
     mutate(userInfo);
+    navigate('/login');
   };
 
   return (
