@@ -9,7 +9,6 @@ const api = axios.create({
 
 export async function ReadData() {
   return await api('/product/').then((response) => {
-    console.log('aaa', response.data);
     return response.data;
   });
 }
@@ -26,6 +25,5 @@ export async function RequestLogin(userInfo) {
 
 export async function RequestProductRegist(userInfo) {
   const { data } = await api.post('/product', userInfo);
-  console.log('ddd', data);
   return data;
 }

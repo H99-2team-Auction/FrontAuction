@@ -8,7 +8,6 @@ export default function Header() {
   const [isLoging, setIsLoging] = useRecoilState(isLogin);
   const [recoilHeaderId, setRecoilHeaderId] = useRecoilState(ID);
 
-  console.log(isLoging);
   useEffect(() => {}, [isLoging]);
   const navigate = useNavigate();
 

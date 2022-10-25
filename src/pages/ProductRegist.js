@@ -7,13 +7,6 @@ export default function ProductRegist() {
   const [productInfo, setProductInfo] = useState('');
   const [image, setImage] = useState();
 
-  const { data } = useQuery(ReadData, {
-    onSuccess: (temp) => {
-      console.log('ccc', temp);
-    },
-  });
-  console.log('eee', data);
-
   const onTitleChangeHandler = (event) => {
     const { name, value } = event.target;
 
@@ -23,13 +16,11 @@ export default function ProductRegist() {
   const onBodyChangeHandler = (event) => {
     const { name, value } = event.target;
     setProductInfo({ ...productInfo, [name]: value });
-    console.log(productInfo);
   };
 
   const onLowPriceChangeHandler = (event) => {
     const { name, value } = event.target;
     setProductInfo({ ...productInfo, [name]: parseInt(value) });
-    console.log(productInfo);
   };
 
   const onImageHandler = (event) => {
@@ -44,7 +35,6 @@ export default function ProductRegist() {
       setImage({ image: event.target.files[0] });
     };
     setImage(() => event.target.files[0]);
-    console.log(image);
   };
 
   const { mutate } = useMutation(RequestProductRegist, {
@@ -63,7 +53,7 @@ export default function ProductRegist() {
     // console.log('formdata', formData);
     // console.log(productInfo);
     // mutate(formData);
-    console.log(productInfo);
+    // console.log(productInfo);
     mutate(productInfo);
   };
 
