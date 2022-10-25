@@ -1,14 +1,14 @@
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { ReadData } from '../api/api';
+import { ReadDatas } from '../api/api';
 
 export default function Home() {
   // 라우터 navigate
   const navigate = useNavigate();
 
   // home product Data useQuery
-  const { data: homeData } = useQuery(['HomeData'], ReadData, {
+  const { data: homeData } = useQuery(['HomeData'], ReadDatas, {
     onSuccess: (temp) => {
       console.log(temp);
     },
@@ -19,7 +19,7 @@ export default function Home() {
       <StPostContainer>
         <StPostBox onClick={() => navigate('detail')}>
           <StPostHeader>이상한 펭귄 데려가세요. (테스트)</StPostHeader>
-          <StPostImage src={`https://upload.wikimedia.org/wikipedia/ko/thumb/d/d4/%ED%8E%AD%EC%88%98.jpg/300px-%ED%8E%AD%EC%88%98.jpg`} />
+          <StPostImage src={`https://jaesa-bucket.s3.ap-northeast-2.amazonaws.com/Pictures/5851293a-6dcf-45b4-96c0-21e523a001a7.png`} />
           <StPriceBox>
             <StMinPrice>최저 입찰가 : 500,000원</StMinPrice>
             <StMaxPrice>최대 입찰가 : 1,000,000원</StMaxPrice>

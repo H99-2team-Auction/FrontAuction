@@ -7,14 +7,19 @@ const api = axios.create({
   headers: { Access_Token: token },
 });
 
-export async function ReadData() {
-  return await api('/product/').then((response) => {
-    return response.data;
-  });
+export async function ReadData(id) {
+  const response = await api(`/product/${id}`);
+  return response.data;
+}
+
+export async function ReadDatas() {
+  const response = await api('/product');
+  return response.data;
 }
 
 export async function RequestSignUp(userInfo) {
   const { data } = await api.post('/signup', userInfo);
+  console.log(data);
   return data;
 }
 
