@@ -4,37 +4,59 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { ReadData, RequestProductRegist } from '../api/api';
 
 export default function ProductRegist() {
-  const [productInfo, setProductInfo] = useState('');
+  const dto = '';
+  const initialState = {
+    "dto": {},
+    "file": "",
+  };
+  const [productInfo, setProductInfo] = useState(initialState);
   const [image, setImage] = useState();
 
   const onTitleChangeHandler = (event) => {
     const { name, value } = event.target;
 
-    setProductInfo({ ...productInfo, [name]: value });
+    setProductInfo({ ...productInfo, "dto" : {...productInfo.dto,[name]: value } });
+    console.log(productInfo);
   };
 
   const onBodyChangeHandler = (event) => {
     const { name, value } = event.target;
-    setProductInfo({ ...productInfo, [name]: value });
+    setProductInfo({ ...productInfo,"dto" : {...productInfo.dto,[name]: value }});
+    console.log(productInfo)
   };
 
   const onLowPriceChangeHandler = (event) => {
     const { name, value } = event.target;
-    setProductInfo({ ...productInfo, [name]: parseInt(value) });
+    setProductInfo({ ...productInfo,"dto" : {...productInfo.dto,[name]: value } });
+    console.log(productInfo)
   };
 
   const onImageHandler = (event) => {
     event.preventDefault();
     const filerReader = new FileReader();
 
+    filerReader.onload = () => {
+      setImage({ image: event.target.files[0] });
+    };
+
+    const getEvent = (event.target.files[0])
+    
+    const file = getEvent.name;
+    console.log("www",file)    
+    // setProductInfo({ ...productInfo, "file" : productInfo.file , file  });
+    // console.log(productInfo)
     if (event.target.files[0]) {
       filerReader.readAsDataURL(event.target.files[0]);
     }
 
-    filerReader.onload = () => {
-      setImage({ image: event.target.files[0] });
-    };
-    setImage(() => event.target.files[0]);
+    setImage(file);
+    console.log("!!!",image.image)
+    // console.log(image.image.name);
+    // const imageURL = image.image.name;
+    // console.log("temp",temp)
+    // setProductInfo({ ...productInfo, "file" : productInfo.file , imageURL  });
+    // console.log("aaa",imageURL)
+    // console.log("bbb",image.image.name)
   };
 
   const { mutate } = useMutation(RequestProductRegist, {
@@ -43,18 +65,13 @@ export default function ProductRegist() {
 
   const onSubmitData = (event) => {
     const formData = new FormData();
-    // formData.append('title', productInfo.title);
-    // formData.append('content', productInfo.content);
-    // formData.append('lowprice', productInfo.lowprice);
-    // formData.append('image', image.image);
-    // console.log('image', image.image);
-    // setProductInfo(image.image);
-    // console.log('aaa', productInfo);
-    // console.log('formdata', formData);
+    formData.append('title', productInfo.dto.title);
+    formData.append('content', productInfo.dto.content);
+    formData.append('lowprice', productInfo.dto.lowPrice);
+    formData.append('image', image.image.name);
+    mutate(formData);
     // console.log(productInfo);
-    // mutate(formData);
-    // console.log(productInfo);
-    mutate(productInfo);
+    // mutate(productInfo);
   };
 
   return (

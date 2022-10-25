@@ -1,4 +1,79 @@
 import styled from 'styled-components';
+import { useParams } from 'react-router-dom';
+import { isError, useQuery } from '@tanstack/react-query';
+import { ReadData, ReadDatas } from '../api/api';
+import { useState } from 'react';
+import { useRecoilState } from 'recoil';
+import { ID } from '../store/store';
+
+export default function Detail() {
+  const { id } = useParams();
+  const [recoilDetailId, setRecoilDetailId] = useRecoilState(ID);
+
+  const { data } = useQuery(['DetailData'], () => ReadData(id), {
+    onSuccess: () => {},
+  });
+  console.log(data);
+
+  return (
+    <>
+      {data !== undefined ? (
+        <StDetailContainer>
+          <StDetailBox>
+            <StDetailLeftBox>
+              <StDetailImage src={`https://upload.wikimedia.org/wikipedia/ko/thumb/d/d4/%ED%8E%AD%EC%88%98.jpg/300px-%ED%8E%AD%EC%88%98.jpg`}></StDetailImage>
+
+              <StDetailPriceBox>
+                <StDetailMin>{data.lowPrice}원</StDetailMin>
+                <StDetailMax>현재 최대 입찰가 : 1,000,000원</StDetailMax>
+              </StDetailPriceBox>
+
+              <StDetailPriceBox>
+                <StDetailInputPrice type={`number`} placeholder={`입찰가격 입력...`}></StDetailInputPrice>
+                <StDetailBidding>입찰하기</StDetailBidding>
+              </StDetailPriceBox>
+            </StDetailLeftBox>
+
+            <StDetailRightBox>
+              <StDetailIdBox>
+                <StDetailId>
+                  <StDetailId>
+                    <b>ID : 해물탕좋아해요</b>
+                  </StDetailId>
+                </StDetailId>
+
+                <StDetailIdBtnBox>
+                  <StDetailIdBtn>수정하기</StDetailIdBtn>
+                  <p>{'\u00A0'}</p>
+                  <StDetailIdBtn>삭제하기</StDetailIdBtn>
+                </StDetailIdBtnBox>
+              </StDetailIdBox>
+
+              <StLine />
+              <StDetailBodyBox>
+                <StDetailBodyTitle>${data.title}</StDetailBodyTitle>
+                <StDetailBody>${data.content}</StDetailBody>
+                <StLine />
+                <StDetailCommentList>
+                  <StDetailComment>
+                    <b>북극곰</b> 맛있겠다ㅋㅋ
+                  </StDetailComment>
+                  <StDetailComment>
+                    <b>조류심리학과박사</b> 100만원은 너무 비싼데
+                  </StDetailComment>
+                </StDetailCommentList>
+                <StCommentInputBox>
+                  <StCommentInput placeholder={`\u00A0댓글 입력...`}></StCommentInput>
+                  <StCommentInputBtn>댓글등록</StCommentInputBtn>
+                </StCommentInputBox>
+              </StDetailBodyBox>
+            </StDetailRightBox>
+          </StDetailBox>
+        </StDetailContainer>
+      ) : null}
+    </>
+  );
+}
 
 // 전체 박스 컨테이너
 const StDetailContainer = styled.div`
@@ -115,6 +190,14 @@ const StDetailIdBtn = styled.button`
 // 오른쪽 Body란 Body 박스
 const StDetailBodyBox = styled.div``;
 
+// 오른쪽 Body란 Title 박스
+const StDetailBodyTitle = styled.p`
+  margin-left: 10px;
+  margin-top: 10px;
+  font-weight: bold;
+  font-size: 20px;
+`;
+
 // 오른쪽 Body란
 const StDetailBody = styled.div`
   margin-top: 10px;
@@ -157,64 +240,60 @@ const StCommentInputBtn = styled.div`
   cursor: pointer;
 `;
 
-export default function Detail() {
-  return (
-    <StDetailContainer>
-      <StDetailBox>
-        <StDetailLeftBox>
-          <StDetailImage src={`https://upload.wikimedia.org/wikipedia/ko/thumb/d/d4/%ED%8E%AD%EC%88%98.jpg/300px-%ED%8E%AD%EC%88%98.jpg`}></StDetailImage>
+{/* <StDetailContainer>
+        <StDetailBox>
+          <StDetailLeftBox>
+            <StDetailImage src={`https://upload.wikimedia.org/wikipedia/ko/thumb/d/d4/%ED%8E%AD%EC%88%98.jpg/300px-%ED%8E%AD%EC%88%98.jpg`}></StDetailImage>
 
-          <StDetailPriceBox>
-            <StDetailMin>최저 입찰가 : 1,200원</StDetailMin>
-            <StDetailMax>현재 최대 입찰가 : 1,000,000원</StDetailMax>
-          </StDetailPriceBox>
+            <StDetailPriceBox>
+              <StDetailMin>최저 입찰가 : 1,200원</StDetailMin>
+              <StDetailMax>현재 최대 입찰가 : 1,000,000원</StDetailMax>
+            </StDetailPriceBox>
 
-          <StDetailPriceBox>
-            <StDetailInputPrice type={`number`} placeholder={`입찰가격 입력...`}></StDetailInputPrice>
-            <StDetailBidding>입찰하기</StDetailBidding>
-          </StDetailPriceBox>
-        </StDetailLeftBox>
+            <StDetailPriceBox>
+              <StDetailInputPrice type={`number`} placeholder={`입찰가격 입력...`}></StDetailInputPrice>
+              <StDetailBidding>입찰하기</StDetailBidding>
+            </StDetailPriceBox>
+          </StDetailLeftBox>
 
-        <StDetailRightBox>
-          <StDetailIdBox>
-            <StDetailId>
+          <StDetailRightBox>
+            <StDetailIdBox>
               <StDetailId>
-                <b>ID : 해물탕좋아해요</b>
+                <StDetailId>
+                  <b>ID : 해물탕좋아해요</b>
+                </StDetailId>
               </StDetailId>
-            </StDetailId>
 
-            <StDetailIdBtnBox>
-              <StDetailIdBtn>수정하기</StDetailIdBtn>
-              <p>{'\u00A0'}</p>
-              <StDetailIdBtn>삭제하기</StDetailIdBtn>
-            </StDetailIdBtnBox>
-          </StDetailIdBox>
+              <StDetailIdBtnBox>
+                <StDetailIdBtn>수정하기</StDetailIdBtn>
+                <p>{'\u00A0'}</p>
+                <StDetailIdBtn>삭제하기</StDetailIdBtn>
+              </StDetailIdBtnBox>
+            </StDetailIdBox>
 
-          <StLine />
-          <StDetailBodyBox>
-            <StDetailBody>
-              길가다 주운 펭수 팝니다. <br />
-              밥은 주로 송로버섯을 먹습니다. <br />
-              결벽증 있습니다. <br />
-              먼지 하나라도 발견하면 집안에서 구르기 합니다. <br />
-              <br />
-            </StDetailBody>
             <StLine />
-            <StDetailCommentList>
-              <StDetailComment>
-                <b>북극곰</b> 맛있겠다ㅋㅋ
-              </StDetailComment>
-              <StDetailComment>
-                <b>조류심리학과박사</b> 100만원은 너무 비싼데
-              </StDetailComment>
-            </StDetailCommentList>
-            <StCommentInputBox>
-              <StCommentInput placeholder={`\u00A0댓글 입력...`}></StCommentInput>
-              <StCommentInputBtn>댓글등록</StCommentInputBtn>
-            </StCommentInputBox>
-          </StDetailBodyBox>
-        </StDetailRightBox>
-      </StDetailBox>
-    </StDetailContainer>
-  );
-}
+            <StDetailBodyBox>
+              <StDetailBody>
+                길가다 주운 펭수 팝니다. <br />
+                밥은 주로 송로버섯을 먹습니다. <br />
+                결벽증 있습니다. <br />
+                먼지 하나라도 발견하면 집안에서 구르기 합니다. <br />
+                <br />
+              </StDetailBody>
+              <StLine />
+              <StDetailCommentList>
+                <StDetailComment>
+                  <b>북극곰</b> 맛있겠다ㅋㅋ
+                </StDetailComment>
+                <StDetailComment>
+                  <b>조류심리학과박사</b> 100만원은 너무 비싼데
+                </StDetailComment>
+              </StDetailCommentList>
+              <StCommentInputBox>
+                <StCommentInput placeholder={`\u00A0댓글 입력...`}></StCommentInput>
+                <StCommentInputBtn>댓글등록</StCommentInputBtn>
+              </StCommentInputBox>
+            </StDetailBodyBox>
+          </StDetailRightBox>
+        </StDetailBox>
+      </StDetailContainer> */}
