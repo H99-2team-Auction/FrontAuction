@@ -17,7 +17,7 @@ export default function Router() {
         <Route path='/' element={<Home />} />
         <Route path='/login' element={<Login />} />
         <Route path='/signup' element={<SignUp />} />
-        <Route path='/detail' element={<Detail />} />
+        <Route path='/detail/:id' element={<Detail />} />
         <Route path='/productregist' element={<ProductRegist />} />
         <Route path='/mypage' element={<Mypage />}>
           <Route path='successbid' element={<SuccessBid />} />

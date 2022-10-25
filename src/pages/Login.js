@@ -9,7 +9,10 @@ import { isLogin } from '../store/store';
 import { ID } from '../store/store';
 
 export default function Login() {
+  // 로그인 여부 recoil
   const [isLoging, setIsLoging] = useRecoilState(isLogin);
+
+  // 로그인 ID recoil
   const [recoilLoginId, setRecoilLoginId] = useRecoilState(ID);
 
   const [myId, setMyId] = useState();
@@ -25,7 +28,6 @@ export default function Login() {
   // ID INPUT
   const onIdChangeHandler = (event) => {
     const { name, value } = event.target;
-    console.log({ [name]: value });
     setUserInfo({ ...userInfo, [name]: value });
     setMyId(value);
   };
@@ -36,9 +38,8 @@ export default function Login() {
   };
 
   // 로그인 정보 서버로 보내기 / 토큰 담기
-  const { mutate, isError } = useMutation(RequestLogin, {
+  const { mutate } = useMutation(RequestLogin, {
     onSuccess: (response) => {
-      console.log('___', response);
       localStorage.setItem('Access_Token', response.headers.access_token);
       localStorage.setItem('Refresh_Token', response.headers.refresh_token);
       localStorage.setItem('expiredTime', response.data.cur_time);

@@ -4,23 +4,46 @@ import { useQuery } from '@tanstack/react-query';
 import { ReadData } from '../api/api';
 
 export default function Home() {
+  // 라우터 navigate
   const navigate = useNavigate();
 
-  const { data } = useQuery(['myData'], ReadData, {
-    onSuccess: (temp) => {},
+  // home product Data useQuery
+  const { data: homeData } = useQuery(['HomeData'], ReadData, {
+    onSuccess: (temp) => {
+      console.log(temp);
+    },
   });
+
   return (
-    <StPostContainer>
-      <StPostBox onClick={() => navigate('detail')}>
-        <StPostHeader>이상한 펭귄 데려가세요.</StPostHeader>
-        <StPostImage src={`https://upload.wikimedia.org/wikipedia/ko/thumb/d/d4/%ED%8E%AD%EC%88%98.jpg/300px-%ED%8E%AD%EC%88%98.jpg`} />
-        <StPriceBox>
-          <StMinPrice>최저 입찰가 : 500,000원</StMinPrice>
-          <StMaxPrice>최대 입찰가 : 1,000,000원</StMaxPrice>
-        </StPriceBox>
-        <StBodyBox>길가다 주운 펭수 팝니다. 밥은 주로 송로버섯을 먹습니다.</StBodyBox>
-      </StPostBox>
-    </StPostContainer>
+    <>
+      <StPostContainer>
+        <StPostBox onClick={() => navigate('detail')}>
+          <StPostHeader>이상한 펭귄 데려가세요. (테스트)</StPostHeader>
+          <StPostImage src={`https://upload.wikimedia.org/wikipedia/ko/thumb/d/d4/%ED%8E%AD%EC%88%98.jpg/300px-%ED%8E%AD%EC%88%98.jpg`} />
+          <StPriceBox>
+            <StMinPrice>최저 입찰가 : 500,000원</StMinPrice>
+            <StMaxPrice>최대 입찰가 : 1,000,000원</StMaxPrice>
+          </StPriceBox>
+          <StBodyBox>길가다 주운 펭수 팝니다. 밥은 주로 송로버섯을 먹습니다.</StBodyBox>
+        </StPostBox>
+      </StPostContainer>
+
+      {homeData !== undefined
+        ? homeData.data.map((data) => {
+            return (
+              <StPostBox onClick={() => navigate(`detail/${data.id}`)}>
+                <StPostHeader>{data.title}</StPostHeader>
+                <StPostImage src={`https://upload.wikimedia.org/wikipedia/ko/thumb/d/d4/%ED%8E%AD%EC%88%98.jpg/300px-%ED%8E%AD%EC%88%98.jpg`} />
+                <StPriceBox>
+                  <StMinPrice>최저 입찰가 : {data.lowPrice}원</StMinPrice>
+                  <StMaxPrice>최대 입찰가 : 1,000,000원</StMaxPrice>
+                </StPriceBox>
+                <StBodyBox>{data.content}</StBodyBox>
+              </StPostBox>
+            );
+          })
+        : null}
+    </>
   );
 }
 
