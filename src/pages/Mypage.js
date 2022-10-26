@@ -2,10 +2,13 @@ import styled from 'styled-components';
 import { Outlet, useNavigate } from 'react-router-dom';
 
 export default function Mypage() {
+  // 라우터 navigate
   const navigate = useNavigate();
+
   return (
     <>
       <StMypageNavbar>
+        {/* 낙찰받은 상품목록 버튼 */}
         <StSuccessBidMenu
           onClick={() => {
             navigate('successbid');
@@ -13,6 +16,8 @@ export default function Mypage() {
         >
           낙찰받은 상품목록
         </StSuccessBidMenu>
+
+        {/* 입찰중인 상품목록 버튼 */}
         <StBiddingMenu
           onClick={() => {
             navigate('bidding');
@@ -20,6 +25,8 @@ export default function Mypage() {
         >
           입찰중인 상품목록
         </StBiddingMenu>
+
+        {/* 관심있는 상품목록 버튼 */}
         <StLikeProductMenu
           onClick={() => {
             navigate('likeproduct');

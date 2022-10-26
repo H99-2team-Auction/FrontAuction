@@ -3,27 +3,37 @@ import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { isLogin, userID } from '../store/store';
+import { useMutation } from '@tanstack/react-query';
+import { RequestLogout } from '../api/api';
+import { axios } from 'axios';
 
 export default function Header() {
   const [isLoging, setIsLoging] = useRecoilState(isLogin);
   const [recoilHeaderId, setRecoilHeaderId] = useRecoilState(userID);
-
-  useEffect(() => {
-    if (localStorage.getItem('Access_Token') !== null) {
-      setIsLoging(true);
-    } else {
-      setIsLoging(false);
-    }
-  }, [isLoging]);
-
+  const [isRedirect, setIsRedirect] = useState(false);
   const navigate = useNavigate();
 
-  const onLogout = () => {
+  // function RequestLogout() {
+  //   const { data } = axios.post(`http://3.35.52.225/logout`);
+  //   navigate('/login');
+  //   console.log('dadasd', data);
+  // }
+
+  // 로그아웃
+  const { mutate: LogoutMutate } = useMutation(RequestLogout, {
+    onSuccess: () => {
+      console.log('logout');
+    },
+    onError: () => {},
+  });
+
+  // 로그아웃 버튼
+  const onLogout = (a) => {
     localStorage.removeItem('Access_Token');
     localStorage.removeItem('Refresh_Token');
     setIsLoging(false);
     alert('로그아웃 완료');
-    navigate('/');
+    LogoutMutate();
   };
 
   return (
@@ -33,7 +43,7 @@ export default function Header() {
         {isLoging === true ? <StHeaderId>{recoilHeaderId}님 반갑습니다.</StHeaderId> : null}
         {isLoging === true ? <StHeaderMyPage onClick={() => navigate('mypage')}>마이페이지</StHeaderMyPage> : null}
         {isLoging === true ? <StHeaderPostUp onClick={() => navigate('productregist')}>상품등록</StHeaderPostUp> : null}
-        {isLoging === true ? <StHeaderLogout onClick={onLogout}>로그아웃</StHeaderLogout> : null}
+        {isLoging === true ? <StHeaderLogout onClick={() => onLogout()}>로그아웃</StHeaderLogout> : null}
         {isLoging === false ? <StHeaderLoginBtn onClick={() => navigate('login')}>로그인</StHeaderLoginBtn> : null}
       </StHeaderRightBar>
     </StHeader>
@@ -94,3 +104,10 @@ const StHeaderId = styled.span`
   margin-right: 15px;
   cursor: default;
 `;
+
+// navigate('/login');
+
+// console.log('logout', temp.request.status);
+// if (temp.request.status === 405) {
+//   navigate('/login');
+// }

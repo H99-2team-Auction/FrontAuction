@@ -1,6 +1,10 @@
 import axios from 'axios';
+
 import { useRecoilValue, useRecoilState } from 'recoil';
 import { productID } from '../store/store';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+
 const token = localStorage.getItem('Access_Token');
 
 const api = axios.create({
@@ -33,6 +37,12 @@ export async function RequestLogin(userInfo) {
   return response;
 }
 
+// post / 로그아웃;
+export async function RequestLogout() {
+  const data = await axios.post(`http://3.35.52.225/logout`);
+  return data;
+}
+
 // post / 상품등록 정보 보내기
 export async function RequestProductRegist(formData) {
   const { data } = await api.post('/product', formData, {
@@ -53,7 +63,6 @@ export async function RequestCommentInput({ id, comment }) {
 // post / 입찰하기
 export async function RequestPriceInput({ id, price }) {
   const data = await api.post(`/product/${id}/bid`, price);
-  console.log('123', data);
 }
 
 // post / 낙찰하기
@@ -86,3 +95,11 @@ export async function BiddingDataRead() {
   const response = await api('/mypage/bid');
   return response.data;
 }
+
+// delete / 댓글 삭제하기
+export async function RequestPostCommentDelete({ id, commentId }) {
+  const { data } = await api.delete(`/product/${id}/comment/${commentId}`);
+  console.log('aaa', data);
+}
+
+//  DELETE
