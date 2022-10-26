@@ -31,7 +31,7 @@ export default function Home() {
       {homeData !== undefined
         ? homeData.data.map((data) => {
             return (
-              <StPostBox onClick={() => navigate(`detail/${data.id}`)}>
+              <StPostBox key={data.id} onClick={() => navigate(`detail/${data.id}`)}>
                 <StPostHeader>{data.title}</StPostHeader>
                 <StPostImage src={`https://upload.wikimedia.org/wikipedia/ko/thumb/d/d4/%ED%8E%AD%EC%88%98.jpg/300px-%ED%8E%AD%EC%88%98.jpg`} />
                 <StPriceBox>

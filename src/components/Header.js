@@ -2,13 +2,20 @@ import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
-import { isLogin, ID } from '../store/store';
+import { isLogin, userID } from '../store/store';
 
 export default function Header() {
   const [isLoging, setIsLoging] = useRecoilState(isLogin);
-  const [recoilHeaderId, setRecoilHeaderId] = useRecoilState(ID);
+  const [recoilHeaderId, setRecoilHeaderId] = useRecoilState(userID);
 
-  useEffect(() => {}, [isLoging]);
+  useEffect(() => {
+    if (localStorage.getItem('Access_Token') !== null) {
+      setIsLoging(true);
+    } else {
+      setIsLoging(false);
+    }
+  }, [isLoging]);
+
   const navigate = useNavigate();
 
   const onLogout = () => {

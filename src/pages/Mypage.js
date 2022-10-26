@@ -1,6 +1,38 @@
 import styled from 'styled-components';
 import { Outlet, useNavigate } from 'react-router-dom';
 
+export default function Mypage() {
+  const navigate = useNavigate();
+  return (
+    <>
+      <StMypageNavbar>
+        <StSuccessBidMenu
+          onClick={() => {
+            navigate('successbid');
+          }}
+        >
+          낙찰받은 상품목록
+        </StSuccessBidMenu>
+        <StBiddingMenu
+          onClick={() => {
+            navigate('bidding');
+          }}
+        >
+          입찰중인 상품목록
+        </StBiddingMenu>
+        <StLikeProductMenu
+          onClick={() => {
+            navigate('likeproduct');
+          }}
+        >
+          관심있는 상품목록
+        </StLikeProductMenu>
+      </StMypageNavbar>
+      <Outlet></Outlet>
+    </>
+  );
+}
+
 const StMypageNavbar = styled.div`
   margin-top: 20px;
   background-color: #348597;
@@ -35,35 +67,3 @@ const StLikeProductMenu = styled.div`
   color: black;
   cursor: pointer;
 `;
-
-export default function Mypage() {
-  const navigate = useNavigate();
-  return (
-    <>
-      <StMypageNavbar>
-        <StSuccessBidMenu
-          onClick={() => {
-            navigate('successbid');
-          }}
-        >
-          낙찰받은 상품목록
-        </StSuccessBidMenu>
-        <StBiddingMenu
-          onClick={() => {
-            navigate('bidding');
-          }}
-        >
-          낙찰받은 상품목록
-        </StBiddingMenu>
-        <StLikeProductMenu
-          onClick={() => {
-            navigate('likeproduct');
-          }}
-        >
-          관심있는 상품목록
-        </StLikeProductMenu>
-      </StMypageNavbar>
-      <Outlet></Outlet>
-    </>
-  );
-}

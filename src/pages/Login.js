@@ -6,14 +6,14 @@ import { RequestLogin } from '../api/api';
 import axios from 'axios';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { isLogin } from '../store/store';
-import { ID } from '../store/store';
+import { userID } from '../store/store';
 
 export default function Login() {
   // 로그인 여부 recoil
   const [isLoging, setIsLoging] = useRecoilState(isLogin);
 
   // 로그인 ID recoil
-  const [recoilLoginId, setRecoilLoginId] = useRecoilState(ID);
+  const [recoilLoginId, setRecoilLoginId] = useRecoilState(userID);
 
   const [myId, setMyId] = useState();
   // 라우터 navigate
@@ -42,9 +42,13 @@ export default function Login() {
     onSuccess: (response) => {
       localStorage.setItem('Access_Token', response.headers.access_token);
       localStorage.setItem('Refresh_Token', response.headers.refresh_token);
-      localStorage.setItem('expiredTime', response.data.cur_time);
-      axios.defaults.headers.common['x-access-token'] = response.data.data.accessToken;
 
+      // localStorage.setItem('expiredTime', response.data.cur_time);
+      // axios.defaults.headers.common['x-access-token'] = response.data.data.accessToken;
+
+      console.log(response);
+
+      // 로그인 성공시 홈페이지로 이동
       onLoginSuccess();
     },
     onError: () => {
