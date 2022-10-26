@@ -1,5 +1,37 @@
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
+import { LikeDataRead } from '../../api/api';
+
+export default function LikeProduct() {
+  const navigate = useNavigate();
+
+  const { data: LikeProductDatas } = useQuery(['LikeProductData'], LikeDataRead, {
+    onSuccess: (temp) => {
+      console.log(temp);
+    },
+  });
+
+  return (
+    <StPostContainer>
+      {LikeProductDatas !== undefined
+        ? LikeProductDatas.map((data) => {
+            return (
+              <StPostBox key={data.id} onClick={() => navigate(`detail/${data.id}`)}>
+                <StPostHeader>{data.title}</StPostHeader>
+                <StPostImage src={`https://upload.wikimedia.org/wikipedia/ko/thumb/d/d4/%ED%8E%AD%EC%88%98.jpg/300px-%ED%8E%AD%EC%88%98.jpg`} />
+                <StPriceBox>
+                  <StMinPrice>최저 입찰가 : {data.lowPrice}원</StMinPrice>
+                  <StMaxPrice>최대 입찰가 : 1,000,000원</StMaxPrice>
+                </StPriceBox>
+                <StBodyBox>{data.content}</StBodyBox>
+              </StPostBox>
+            );
+          })
+        : null}
+    </StPostContainer>
+  );
+}
 
 const StPostContainer = styled.div`
   margin: 0 auto;
@@ -60,20 +92,3 @@ const StBodyBox = styled.div`
   overflow: hidden;
   white-space: nowrap;
 `;
-
-export default function LikeProduct() {
-  const navigate = useNavigate();
-  return (
-    <StPostContainer>
-      <StPostBox onClick={() => navigate('detail')}>
-        <StPostHeader>이상한 펭귄 데려가세요.</StPostHeader>
-        <StPostImage src={`https://upload.wikimedia.org/wikipedia/ko/thumb/d/d4/%ED%8E%AD%EC%88%98.jpg/300px-%ED%8E%AD%EC%88%98.jpg`} />
-        <StPriceBox>
-          <StMinPrice>최저 입찰가 : 500,000원</StMinPrice>
-          <StMaxPrice>최대 입찰가 : 1,000,000원</StMaxPrice>
-        </StPriceBox>
-        <StBodyBox>길가다 주운 펭수 팝니다. 밥은 주로 송로버섯을 먹습니다.</StBodyBox>
-      </StPostBox>
-    </StPostContainer>
-  );
-}

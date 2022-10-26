@@ -4,31 +4,25 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { ReadData, RequestProductRegist } from '../api/api';
 
 export default function ProductRegist() {
-  const dto = '';
-  const initialState = {
-    "dto": {},
-    "file": "",
-  };
-  const [productInfo, setProductInfo] = useState(initialState);
+  const [productInfo, setProductInfo] = useState('');
   const [image, setImage] = useState();
 
   const onTitleChangeHandler = (event) => {
     const { name, value } = event.target;
 
-    setProductInfo({ ...productInfo, "dto" : {...productInfo.dto,[name]: value } });
-    console.log(productInfo);
+    setProductInfo({ ...productInfo, [name]: value });
   };
 
   const onBodyChangeHandler = (event) => {
     const { name, value } = event.target;
-    setProductInfo({ ...productInfo,"dto" : {...productInfo.dto,[name]: value }});
-    console.log(productInfo)
+    setProductInfo({ ...productInfo, [name]: value });
+    console.log(productInfo);
   };
 
   const onLowPriceChangeHandler = (event) => {
     const { name, value } = event.target;
-    setProductInfo({ ...productInfo,"dto" : {...productInfo.dto,[name]: value } });
-    console.log(productInfo)
+    setProductInfo({ ...productInfo, [name]: value });
+    console.log(productInfo);
   };
 
   const onImageHandler = (event) => {
@@ -39,10 +33,9 @@ export default function ProductRegist() {
       setImage({ image: event.target.files[0] });
     };
 
-    const getEvent = (event.target.files[0])
-    
-    const file = getEvent.name;
-    console.log("www",file)    
+    const getEvent = event.target.files[0];
+
+    const file = getEvent;
     // setProductInfo({ ...productInfo, "file" : productInfo.file , file  });
     // console.log(productInfo)
     if (event.target.files[0]) {
@@ -50,7 +43,7 @@ export default function ProductRegist() {
     }
 
     setImage(file);
-    console.log("!!!",image.image)
+    console.log('!!!', image.image);
     // console.log(image.image.name);
     // const imageURL = image.image.name;
     // console.log("temp",temp)
@@ -65,13 +58,12 @@ export default function ProductRegist() {
 
   const onSubmitData = (event) => {
     const formData = new FormData();
-    formData.append('title', productInfo.dto.title);
-    formData.append('content', productInfo.dto.content);
-    formData.append('lowprice', productInfo.dto.lowPrice);
-    formData.append('image', image.image.name);
+    console.log('www', image);
+    console.log('ppp', productInfo);
+    formData.append('file', image);
+    formData.append('dto', ([JSON.stringify(productInfo)], { type: 'application/json' }));
+
     mutate(formData);
-    // console.log(productInfo);
-    // mutate(productInfo);
   };
 
   return (
