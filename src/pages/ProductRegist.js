@@ -4,65 +4,57 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { ReadData, RequestProductRegist } from '../api/api';
 
 export default function ProductRegist() {
+  // useState 서버로 전송하기 위한 상품 정보 담기
   const [productInfo, setProductInfo] = useState('');
+
+  // useState 서버로 전송하기 위한 이미지 정보 담기
   const [image, setImage] = useState();
 
+  // onChange Title 정보 담기
   const onTitleChangeHandler = (event) => {
     const { name, value } = event.target;
-
     setProductInfo({ ...productInfo, [name]: value });
+    console.log(productInfo);
   };
 
+  // onChange Body 정보 담기
   const onBodyChangeHandler = (event) => {
     const { name, value } = event.target;
     setProductInfo({ ...productInfo, [name]: value });
     console.log(productInfo);
   };
 
+  // onChange 최소 입찰가 정보 담기
   const onLowPriceChangeHandler = (event) => {
     const { name, value } = event.target;
     setProductInfo({ ...productInfo, [name]: value });
     console.log(productInfo);
   };
 
+  // onChange Image 정보 담기
   const onImageHandler = (event) => {
     event.preventDefault();
-    const filerReader = new FileReader();
-
-    filerReader.onload = () => {
-      setImage({ image: event.target.files[0] });
-    };
-
-    const getEvent = event.target.files[0];
-
-    const file = getEvent;
-    // setProductInfo({ ...productInfo, "file" : productInfo.file , file  });
-    // console.log(productInfo)
-    if (event.target.files[0]) {
-      filerReader.readAsDataURL(event.target.files[0]);
-    }
-
+    const file = event.target.files[0];
     setImage(file);
-    console.log('!!!', image.image);
-    // console.log(image.image.name);
-    // const imageURL = image.image.name;
-    // console.log("temp",temp)
-    // setProductInfo({ ...productInfo, "file" : productInfo.file , imageURL  });
-    // console.log("aaa",imageURL)
-    // console.log("bbb",image.image.name)
+    console.log('!!!', image);
   };
 
+  // useMutation 서버로 상품정보 보내기 mutate
   const { mutate } = useMutation(RequestProductRegist, {
     onSuccess: () => {},
   });
 
+  // 상품 정보 보내기 버튼 클릭 시
   const onSubmitData = (event) => {
     const formData = new FormData();
-    console.log('www', image);
-    console.log('ppp', productInfo);
-    formData.append('file', image);
-    formData.append('dto', ([JSON.stringify(productInfo)], { type: 'application/json' }));
+    console.log('상품 보내기 이미지', image);
+    console.log('상품 보내기 정보', productInfo);
 
+    formData.append('file', image);
+    formData.append('title', productInfo.title);
+    formData.append('content', productInfo.content);
+    formData.append('lowPrice', productInfo.lowPrice);
+    // formData.append('dto', ([JSON.stringify(productInfo)], { type: 'application/json' }));
     mutate(formData);
   };
 
@@ -185,3 +177,4 @@ const ProductSubmit = styled.button`
   height: 40px;
   width: 100px;
 `;
+// formData.append('dto', productInfo);

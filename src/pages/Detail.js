@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { Navigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { ReadData, RequestCommentInput, RequestPriceInput, RequestSuccessBidInput, RequestDeletePost, RequestLikePost } from '../api/api';
 import { useState } from 'react';
@@ -7,6 +7,8 @@ import { useRecoilState } from 'recoil';
 import { userID } from '../store/store';
 
 export default function Detail() {
+  const navigate = useNavigate();
+
   // useParams 주소값 ID 가져오기
   const { id } = useParams();
   // console.log('id', id);
@@ -82,8 +84,8 @@ export default function Detail() {
       onSuccessPost();
     },
     onError: (temp) => {
-      // console.log('ErrorDeletePost', temp);
-      // onErrorPost();
+      console.log('ErrorDeletePost', temp);
+      onErrorPost();
     },
   });
 
@@ -95,12 +97,11 @@ export default function Detail() {
   // 게시글 삭제 성공
   const onSuccessPost = () => {
     alert('삭제 성공');
-    Navigate('/');
+    navigate('/');
   };
   // 게시글 삭제 실패
   const onErrorPost = () => {
     alert('삭제 실패');
-    Navigate('/');
   };
 
   // useMuation 관심있는 상품 등록
@@ -111,8 +112,32 @@ export default function Detail() {
     },
   });
 
+  // 관심등록 버튼
   const onLikePost = () => {
     LikePostMutate();
+  };
+
+  // 수정하기 버튼
+  const onModifyPost = (id) => {
+    navigate(`/productmodify/${id}`);
+  };
+
+  // useMuation 댓글 삭제
+  const { mutate: DeleteCommentMutate } = useMutation(() => RequestDeletePost(id), {
+    onSuccess: (temp) => {
+      queryClient.invalidateQueries(['DetailData']);
+      console.log('SuccessDeleteComment', temp);
+      // onSuccessPost();
+    },
+    onError: (temp) => {
+      console.log('ErrorDeleteComment', temp);
+      onErrorPost();
+    },
+  });
+
+  // 댓글삭제 버튼
+  const onDeleteComment = (id, commentid) => {
+    DeleteCommentMutate(id, commentid);
   };
 
   return (
@@ -125,7 +150,7 @@ export default function Detail() {
 
               <StDetailPriceBox>
                 <StDetailMin>최저 입찰가 : {data.data.lowPrice}원</StDetailMin>
-                <StDetailMax>현재 최대 입찰가 : 1,000,000원</StDetailMax>
+                <StDetailMax>현재 최대 입찰가 : {data.data.highPrice}원</StDetailMax>
               </StDetailPriceBox>
 
               <StDetailInputBox>
@@ -151,7 +176,7 @@ export default function Detail() {
                 <StDetailIdBtnBox>
                   <StDetailIdBtn onClick={() => onSuccessBid(id)}>낙찰하기</StDetailIdBtn>
                   <p>{'\u00A0'}</p>
-                  <StDetailIdBtn>수정하기</StDetailIdBtn>
+                  <StDetailIdBtn onClick={() => onModifyPost(id)}>수정하기</StDetailIdBtn>
                   <p>{'\u00A0'}</p>
                   <StDetailIdBtn onClick={() => onDeletePost(id)}>삭제하기</StDetailIdBtn>
                 </StDetailIdBtnBox>
@@ -178,6 +203,7 @@ export default function Detail() {
                         return (
                           <StDetailComment>
                             <b>{comments.username}</b> {comments.comment}
+                            <StDetailCommentDelete onClick={() => onDeleteComment(id, comments.commentid)}>삭제</StDetailCommentDelete>
                           </StDetailComment>
                         );
                       })
@@ -372,6 +398,8 @@ const StDetailComment = styled.li`
   overflow-x: hidden;
   word-break: break-all;
 `;
+
+const StDetailCommentDelete = styled.button``;
 
 // 오른쪽 Input란 박스
 const StCommentInputBox = styled.div`

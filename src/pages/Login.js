@@ -43,15 +43,13 @@ export default function Login() {
       localStorage.setItem('Access_Token', response.headers.access_token);
       localStorage.setItem('Refresh_Token', response.headers.refresh_token);
 
-      // localStorage.setItem('expiredTime', response.data.cur_time);
-      // axios.defaults.headers.common['x-access-token'] = response.data.data.accessToken;
-
-      console.log(response);
+      console.log('LoginSuccess', response);
 
       // 로그인 성공시 홈페이지로 이동
       onLoginSuccess();
     },
     onError: () => {
+      // 실패시 출력
       setErrorMsg('아이디 또는 비밀번호가 일치하지 않습니다.');
     },
   });
@@ -139,3 +137,6 @@ const StSignUpBtn = styled.button`
 const StSignErrorBar = styled.p`
   margin-top: 14px;
 `;
+
+// localStorage.setItem('expiredTime', response.data.cur_time);
+// axios.defaults.headers.common['x-access-token'] = response.data.data.accessToken;
