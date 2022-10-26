@@ -4,6 +4,8 @@ import { useQuery } from '@tanstack/react-query';
 import { LikeDataRead } from '../../api/api';
 
 export default function LikeProduct() {
+  // git test
+  const test = 'git test';
   const navigate = useNavigate();
 
   const { data: LikeProductDatas } = useQuery(['LikeProductData'], LikeDataRead, {
