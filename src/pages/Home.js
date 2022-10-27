@@ -32,31 +32,30 @@ export default function Home() {
 
   useEffect(() => {
     queryClient.invalidateQueries(['HomeData']);
-  }, [homeData]);
+  }, homeData);
 
   return (
     <>
       <StPostContainer>
         <StGap />
 
-        {homeData !== undefined
-          ? homeData.data.map((data) => {
-              return (
-                <StPostBox key={data.id} onClick={() => navigate(`detail/${data.id}`)}>
-                  <StTitleBox>
-                    <StPostHeader>{data.title}</StPostHeader>
-                    <StHeaderId>{data.username}</StHeaderId>
-                  </StTitleBox>
-                  <StPostImage src={`https://jaesa-bucket.s3.ap-northeast-2.amazonaws.com/${data.path}`} />
-                  <StPriceBox>
-                    <StMinPrice>최저 입찰가 : {data.lowPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}원</StMinPrice>
-                    <StMaxPrice>현재 최대 입찰가 : {data.highPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}원</StMaxPrice>
-                  </StPriceBox>
-                  <StBodyBox>{data.content}</StBodyBox>
-                </StPostBox>
-              );
-            })
-          : null}
+        {homeData &&
+          homeData?.data.map((data) => {
+            return (
+              <StPostBox key={data?.id} onClick={() => navigate(`detail/${data?.id}`)}>
+                <StTitleBox>
+                  <StPostHeader>{data?.title}</StPostHeader>
+                  <StHeaderId>{data?.username}</StHeaderId>
+                </StTitleBox>
+                <StPostImage src={`https://jaesa-bucket.s3.ap-northeast-2.amazonaws.com/${data?.path}`} />
+                <StPriceBox>
+                  <StMinPrice>최저 입찰가 : {data?.lowPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}원</StMinPrice>
+                  <StMaxPrice>현재 최대 입찰가 : {data?.highPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}원</StMaxPrice>
+                </StPriceBox>
+                <StBodyBox>{data.content}</StBodyBox>
+              </StPostBox>
+            );
+          })}
       </StPostContainer>
     </>
   );
