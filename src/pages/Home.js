@@ -24,6 +24,8 @@ export default function Home() {
       setViewLowPrice(commaLowPrice);
       setViewHighPrice(commaHighPrice);
     },
+    refetchInterval: 1000,
+    refetchIntervalInBackground: true,
   });
 
   return (

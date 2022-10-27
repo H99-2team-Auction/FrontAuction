@@ -61,6 +61,8 @@ export default function Detail() {
       setViewLowPrice(commaLowPrice);
       setViewHighPrice(commaHighPrice);
     },
+    refetchInterval: 1000,
+    refetchIntervalInBackground: true,
   });
 
   // onChange 댓글 입력 정보 담기
