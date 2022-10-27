@@ -40,27 +40,22 @@ export default function Detail() {
   const { data } = useQuery(['DetailData'], () => ReadData(id), {
     onSuccess: () => {
       // 입찰가 콤마찍기용
-      const createA = data.data.createdAt;
-      const createB = data.data.createdAt;
-      const createASlice = createA.slice(0, 10);
-      const createBSlice = createB.slice(11, 19);
-
-      const modifiedA = data.data.modifiedAt;
-      const modifiedB = data.data.modifiedAt;
-      const modifiedASlice = modifiedA.slice(0, 10);
-      const modifiedBSlice = modifiedB.slice(11, 19);
-
-      setCreateData(createASlice + ' ' + createBSlice);
-      setModifiedData(modifiedASlice + ' ' + modifiedBSlice);
-
-      const createLowPrice = data.data.lowPrice;
-      const createHighPrice = data.data.highPrice;
-
-      const commaLowPrice = createLowPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-      const commaHighPrice = createHighPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-
-      setViewLowPrice(commaLowPrice);
-      setViewHighPrice(commaHighPrice);
+      // const createA = data.data.createdAt;
+      // const createB = data.data.createdAt;
+      // const createASlice = createA.slice(0, 10);
+      // const createBSlice = createB.slice(11, 19);
+      // const modifiedA = data.data.modifiedAt;
+      // const modifiedB = data.data.modifiedAt;
+      // const modifiedASlice = modifiedA.slice(0, 10);
+      // const modifiedBSlice = modifiedB.slice(11, 19);
+      // setCreateData(createASlice + ' ' + createBSlice);
+      // setModifiedData(modifiedASlice + ' ' + modifiedBSlice);
+      // const createLowPrice = data.data.lowPrice;
+      // const createHighPrice = data.data.highPrice;
+      // const commaLowPrice = createLowPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+      // const commaHighPrice = createHighPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+      // setViewLowPrice(commaLowPrice);
+      // setViewHighPrice(commaHighPrice);
     },
     refetchInterval: 1000,
     refetchIntervalInBackground: true,

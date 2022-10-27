@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 
 export default function Home() {
   // queryClient
-  const queryClient = useQueryClient();
+  // const queryClient = useQueryClient();
 
   // navigate 라우터
   const navigate = useNavigate();
@@ -18,15 +18,12 @@ export default function Home() {
   const { data: homeData } = useQuery(['HomeData'], ReadDatas, {
     onSuccess: (data) => {
       // price 콤마(,)찍기위한 정규표현식
-      const createLowPrice = data.data.lowPrice;
-      const createHighPrice = data.data.highPrice;
-
-      const commaLowPrice = createLowPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-
-      const commaHighPrice = createHighPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-
-      setViewLowPrice(commaLowPrice);
-      setViewHighPrice(commaHighPrice);
+      // const createLowPrice = data.data.lowPrice;
+      // const createHighPrice = data.data.highPrice;
+      // const commaLowPrice = createLowPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+      // const commaHighPrice = createHighPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+      // setViewLowPrice(commaLowPrice);
+      // setViewHighPrice(commaHighPrice);
     },
   });
 
@@ -48,7 +45,7 @@ export default function Home() {
                   <StMinPrice>최저 입찰가 : {data?.lowPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}원</StMinPrice>
                   <StMaxPrice>현재 최대 입찰가 : {data?.highPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}원</StMaxPrice>
                 </StPriceBox>
-                <StBodyBox>{data.content}</StBodyBox>
+                <StBodyBox>{data?.content}</StBodyBox>
               </StPostBox>
             );
           })}
