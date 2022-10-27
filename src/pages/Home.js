@@ -42,8 +42,8 @@ export default function Home() {
                 </StTitleBox>
                 <StPostImage src={`https://jaesa-bucket.s3.ap-northeast-2.amazonaws.com/${data?.path}`} />
                 <StPriceBox>
-                  <StMinPrice>최저 입찰가 : {data?.lowPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}원</StMinPrice>
-                  <StMaxPrice>현재 최대 입찰가 : {data?.highPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}원</StMaxPrice>
+                  <StMinPrice>최저 입찰가 : {data?.lowPrice}원</StMinPrice>
+                  <StMaxPrice>현재 최대 입찰가 : {data?.highPrice}원</StMaxPrice>
                 </StPriceBox>
                 <StBodyBox>{data?.content}</StBodyBox>
               </StPostBox>

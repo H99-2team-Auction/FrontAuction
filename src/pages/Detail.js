@@ -215,8 +215,8 @@ export default function Detail() {
               <StDetailImage src={`https://jaesa-bucket.s3.ap-northeast-2.amazonaws.com/${data.data.path}`}></StDetailImage>
 
               <StDetailPriceBox>
-                <StDetailMin>최저 입찰가 : {viewLowPrice}원</StDetailMin>
-                <StDetailMax>현재 최대 입찰가 : {viewHighPrice}원</StDetailMax>
+                <StDetailMin>최저 입찰가 : {data.data.lowPrice}원</StDetailMin>
+                <StDetailMax>현재 최대 입찰가 : {data.data.highPrice}원</StDetailMax>
               </StDetailPriceBox>
 
               <StDetailInputBox>
