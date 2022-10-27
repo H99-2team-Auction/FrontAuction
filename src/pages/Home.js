@@ -1,12 +1,16 @@
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { ReadDatas } from '../api/api';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export default function Home() {
+  // queryClient
+  const queryClient = useQueryClient();
+
   // navigate 라우터
   const navigate = useNavigate();
+
   const [viewLowPrice, setViewLowPrice] = useState();
   const [viewHighPrice, setViewHighPrice] = useState();
 
@@ -24,14 +28,17 @@ export default function Home() {
       setViewLowPrice(commaLowPrice);
       setViewHighPrice(commaHighPrice);
     },
-    refetchInterval: 1000,
-    refetchIntervalInBackground: true,
   });
+
+  useEffect(() => {
+    queryClient.invalidateQueries(['HomeData']);
+  }, [homeData]);
 
   return (
     <>
       <StPostContainer>
         <StGap />
+
         {homeData !== undefined
           ? homeData.data.map((data) => {
               return (

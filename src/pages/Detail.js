@@ -5,6 +5,7 @@ import { ReadData, RequestCommentInput, RequestPriceInput, RequestSuccessBidInpu
 import { useState } from 'react';
 import { useRecoilState } from 'recoil';
 import { postTitle, postBody, postPrice } from '../store/store';
+import { useEffect } from 'react';
 
 export default function Detail() {
   // 라우터 navigate
@@ -64,6 +65,10 @@ export default function Detail() {
     refetchInterval: 1000,
     refetchIntervalInBackground: true,
   });
+
+  useEffect(() => {
+    queryClient.invalidateQueries(['DetailData']);
+  }, [data]);
 
   // onChange 댓글 입력 정보 담기
   const onCommentInputHandler = (event) => {
