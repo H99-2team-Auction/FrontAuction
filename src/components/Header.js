@@ -34,7 +34,7 @@ export default function Header() {
   return (
     <a>
       <StHeader>
-        <StHeaderSpan onClick={() => navigate('/')}>H99Auction</StHeaderSpan>
+        <StHeaderSpan onClick={() => navigate('/')}>돛단배</StHeaderSpan>
         <StHeaderRightBar>
           {isLoging === true ? <StHeaderId>{recoilHeaderId}님 반갑습니다.</StHeaderId> : null}
           {isLoging === true ? <StHeaderMyPage onClick={() => navigate('mypage')}>마이페이지</StHeaderMyPage> : null}
