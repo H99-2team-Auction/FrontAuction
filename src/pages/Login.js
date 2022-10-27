@@ -79,7 +79,7 @@ export default function Login() {
             AdduserInfo(userInfo);
           }}
         >
-          로그인dd
+          로그인
         </StloginBtn>
         <StSignUpBtn onClick={() => navigate('/signup')}>회원가입</StSignUpBtn>
       </StLoginBoxContainer>
