@@ -1,12 +1,9 @@
 import axios from 'axios';
 
-import { useRecoilValue, useRecoilState } from 'recoil';
-import { productID } from '../store/store';
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-
+// 토큰 담기
 const token = localStorage.getItem('Access_Token');
 
+// 기본 api, header
 const api = axios.create({
   baseURL: 'http://3.35.52.225',
   headers: { Access_Token: token },
@@ -14,15 +11,22 @@ const api = axios.create({
 
 // get / 홈페이지 정보 불러오기
 export async function ReadDatas() {
-  const response = await api('/product');
+  const response = await api.get('/product');
   return response.data;
 }
 
 // get / 상세페이지 정보 불러오기
 export async function ReadData(id) {
-  const response = await api(`/product/${id}`);
+  const response = await api.get(`/product/${id}`);
   return response.data;
 }
+
+// get / 상세페이지 정보 불러오기
+export async function SuccessBidData(id) {
+  const response = await api.get(`/mypage/sold`);
+  return response.data;
+}
+//
 
 // post / 회원가입 유저정보 보내기
 export async function RequestSignUp(userInfo) {
@@ -33,13 +37,13 @@ export async function RequestSignUp(userInfo) {
 
 // post / 로그인 유저정보 보내기
 export async function RequestLogin(userInfo) {
-  const response = await api.post('/login', userInfo);
+  const response = await api.post('/api/login', userInfo);
   return response;
 }
 
 // post / 로그아웃;
 export async function RequestLogout() {
-  const data = await axios.post(`http://3.35.52.225/logout`);
+  const data = await axios.post(`http://3.35.52.225/api/logout`);
   return data;
 }
 
@@ -54,7 +58,7 @@ export async function RequestProductRegist(formData) {
   return data;
 }
 
-// post / 상품 댓글 등록 정보 보내기
+// post / 상품 댓글 등록 입력 보내기
 export async function RequestCommentInput({ id, comment }) {
   const data = await api.post(`/product/${id}/comment`, comment);
   console.log(data);
@@ -86,20 +90,40 @@ export async function RequestLikePost(id) {
 
 // get / 관심있는 상품목록 정보 불러오기
 export async function LikeDataRead() {
-  const response = await api('/mypage/like');
+  const response = await api.get('/mypage/like');
   return response.data;
 }
 
 // get / 입찰한 상품목록 정보 불러오기
 export async function BiddingDataRead() {
-  const response = await api('/mypage/bid');
+  const response = await api.get('/mypage/bid');
   return response.data;
 }
 
 // delete / 댓글 삭제하기
-export async function RequestPostCommentDelete({ id, commentId }) {
-  const { data } = await api.delete(`/product/${id}/comment/${commentId}`);
+export async function RequestPostCommentDelete({ id, commentid }) {
+  console.log('url', `/product/${id}/comment/${commentid}`);
+  console.log('id', id);
+  console.log('commentId', commentid);
+  const { data } = await api.delete(`/product/${id}/comment/${commentid}`);
   console.log('aaa', data);
 }
 
-//  DELETE
+// put / 댓글 수정하기
+export async function RequestPostCommentModify({ id, commentid, finalCommentModify }) {
+  console.log('url', `/product/${id}/comment/${commentid}`);
+  console.log('id', id);
+  console.log('comment', finalCommentModify);
+  const { data } = await api.put(`/product/${id}/comment/${commentid}`, finalCommentModify);
+  console.log('aaa', data);
+}
+
+// patch / 상품수정 정보 보내기
+export async function RequestProductModify({ id, productInfo }) {
+  console.log(`/product/${id}`);
+  console.log('id', id);
+  console.log('data', { productInfo });
+
+  const { data } = await api.patch(`/product/${id}`, productInfo);
+  return data;
+}

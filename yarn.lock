@@ -4741,6 +4741,11 @@
     "combined-stream" "^1.0.8"
     "mime-types" "^2.1.12"
 
+"format@^0.2.2":
+  "integrity" "sha512-wzsgA6WOq+09wrU1tsJ09udeR/YZRaeArL9e1wPbFg3GG2yDnC2ldKpxs4xunpFF9DgqCqOIra3bc1HWrJ37Ww=="
+  "resolved" "https://registry.npmjs.org/format/-/format-0.2.2.tgz"
+  "version" "0.2.2"
+
 "forwarded@0.2.0":
   "integrity" "sha512-buRG0fpBtRHSTCOASe6hD258tEubFoRLb4ZNA6NxMVHNw2gOcwHo9wyablzMzOA5z9xA9L1KNjk/Nt6MT9aYow=="
   "resolved" "https://registry.npmjs.org/forwarded/-/forwarded-0.2.0.tgz"
@@ -7955,6 +7960,11 @@
   "integrity" "sha512-xWGDIW6x921xtzPkhiULtthJHoJvBbF3q26fzloPCK0hsvxtPVelvftw3zjbHWSkR2km9Z+4uxbDDK/6Zw9B8w=="
   "resolved" "https://registry.npmjs.org/react-is/-/react-is-18.2.0.tgz"
   "version" "18.2.0"
+
+"react-number@^0.0.1-alpha4":
+  "integrity" "sha512-GEsyMEfen+gBAo/gC/PPRctOZnHLuqE/Ccr5yqx4hgagMRzF+nirLna+ZKrY17z1BNjMqeKooLXKtKPYZm8W8Q=="
+  "resolved" "https://registry.npmjs.org/react-number/-/react-number-0.0.1-alpha4.tgz"
+  "version" "0.0.1-alpha4"
 
 "react-refresh@^0.11.0", "react-refresh@>=0.10.0 <1.0.0":
   "integrity" "sha512-F27qZr8uUqwhWZboondsPx8tnC3Ct3SxZA3V5WyEvujRyyNv0VYPhoBg1gZ8/MV5tubQp76Trw8lTv9hzRBa+A=="

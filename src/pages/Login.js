@@ -3,8 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { RequestLogin } from '../api/api';
-import axios from 'axios';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilState } from 'recoil';
 import { isLogin } from '../store/store';
 import { userID } from '../store/store';
 
@@ -37,13 +36,12 @@ export default function Login() {
     setUserInfo({ ...userInfo, [name]: value });
   };
 
-  // 로그인 정보 서버로 보내기 / 토큰 담기
+  // useMutaion POST 로그인 정보 서버로 보내기 / 토큰 담기
   const { mutate } = useMutation(RequestLogin, {
     onSuccess: (response) => {
       localStorage.setItem('Access_Token', response.headers.access_token);
       localStorage.setItem('Refresh_Token', response.headers.refresh_token);
-
-      console.log('LoginSuccess', response);
+      localStorage.setItem('myID', myId);
 
       // 로그인 성공시 홈페이지로 이동
       onLoginSuccess();
@@ -61,30 +59,38 @@ export default function Login() {
 
   // 로그인 성공시 함수
   const onLoginSuccess = () => {
-    setRecoilLoginId(myId);
+    setRecoilLoginId(myId); // 전역변수에 myId를 담아요 로그인에 성공하면
     setIsLoging(true);
     alert('로그인 성공');
     navigate('/');
   };
 
   return (
-    <StLoginBoxContainer>
-      <StLoginPTag>ID</StLoginPTag>
-      <StLoginIdInput type={'text'} name='username' onChange={onIdChangeHandler}></StLoginIdInput>
-      <StLoginPTag>PASSWORD</StLoginPTag>
-      <StLoginPasswordInput type={'password'} name='password' onChange={onPasswordChangeHandler}></StLoginPasswordInput>
-      <StSignErrorBar>{ErrorMsg}</StSignErrorBar>
-      <StloginBtn
-        onClick={() => {
-          AdduserInfo(userInfo);
-        }}
-      >
-        로그인
-      </StloginBtn>
-      <StSignUpBtn onClick={() => navigate('/signup')}>회원가입</StSignUpBtn>
-    </StLoginBoxContainer>
+    <>
+      <StGap />
+      <StLoginBoxContainer>
+        <StLoginPTag>ID</StLoginPTag>
+        <StLoginIdInput type={'text'} name='username' onChange={onIdChangeHandler}></StLoginIdInput>
+        <StLoginPTag>PASSWORD</StLoginPTag>
+        <StLoginPasswordInput type={'password'} name='password' onChange={onPasswordChangeHandler}></StLoginPasswordInput>
+        <StSignErrorBar>{ErrorMsg}</StSignErrorBar>
+        <StloginBtn
+          onClick={() => {
+            AdduserInfo(userInfo);
+          }}
+        >
+          로그인
+        </StloginBtn>
+        <StSignUpBtn onClick={() => navigate('/signup')}>회원가입</StSignUpBtn>
+      </StLoginBoxContainer>
+    </>
   );
 }
+
+const StGap = styled.div`
+  margin-top: 120px;
+`;
+
 const StLoginBoxContainer = styled.div`
   width: 400px;
   height: 350px;
@@ -137,6 +143,3 @@ const StSignUpBtn = styled.button`
 const StSignErrorBar = styled.p`
   margin-top: 14px;
 `;
-
-// localStorage.setItem('expiredTime', response.data.cur_time);
-// axios.defaults.headers.common['x-access-token'] = response.data.data.accessToken;

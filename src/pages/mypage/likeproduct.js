@@ -4,10 +4,10 @@ import { useQuery } from '@tanstack/react-query';
 import { LikeDataRead } from '../../api/api';
 
 export default function LikeProduct() {
-  // git test
-  const test = 'git test';
+  // navigate 라우터
   const navigate = useNavigate();
 
+  // useQuery GET 관심등록 데이터
   const { data: LikeProductDatas } = useQuery(['LikeProductData'], LikeDataRead, {
     onSuccess: (temp) => {
       console.log(temp);
@@ -19,12 +19,12 @@ export default function LikeProduct() {
       {LikeProductDatas !== undefined
         ? LikeProductDatas.map((data) => {
             return (
-              <StPostBox key={data.id} onClick={() => navigate(`detail/${data.id}`)}>
+              <StPostBox key={data.id} onClick={() => navigate(`/detail/${data.id}`)}>
                 <StPostHeader>{data.title}</StPostHeader>
-                <StPostImage src={`https://upload.wikimedia.org/wikipedia/ko/thumb/d/d4/%ED%8E%AD%EC%88%98.jpg/300px-%ED%8E%AD%EC%88%98.jpg`} />
+                <StPostImage src={`https://jaesa-bucket.s3.ap-northeast-2.amazonaws.com/${data.path}`} />
                 <StPriceBox>
                   <StMinPrice>최저 입찰가 : {data.lowPrice}원</StMinPrice>
-                  <StMaxPrice>최대 입찰가 : 1,000,000원</StMaxPrice>
+                  <StMaxPrice>최대 입찰가 : {data.highPrice}원</StMaxPrice>
                 </StPriceBox>
                 <StBodyBox>{data.content}</StBodyBox>
               </StPostBox>

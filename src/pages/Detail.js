@@ -1,12 +1,13 @@
 import styled from 'styled-components';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { ReadData, RequestCommentInput, RequestPriceInput, RequestSuccessBidInput, RequestDeletePost, RequestLikePost } from '../api/api';
+import { ReadData, RequestCommentInput, RequestPriceInput, RequestSuccessBidInput, RequestDeletePost, RequestLikePost, RequestPostCommentDelete, RequestPostCommentModify } from '../api/api';
 import { useState } from 'react';
 import { useRecoilState } from 'recoil';
-import { userID } from '../store/store';
+import { postTitle, postBody, postPrice } from '../store/store';
 
 export default function Detail() {
+  // 라우터 navigate
   const navigate = useNavigate();
 
   // useParams 주소값 ID 가져오기
@@ -19,13 +20,48 @@ export default function Detail() {
   // useState 댓글 입력 정보 담기 useState
   const [comment, setComment] = useState('');
 
+  // useState 입력된 가격 담기
   const [price, setPrice] = useState('');
 
-  // useQuery 상세 페이지 정보 가져오기
+  // useState 입찰가 콤마찍기용
+  const [createData, setCreateData] = useState();
+  const [modifiedData, setModifiedData] = useState();
+  const [viewLowPrice, setViewLowPrice] = useState();
+  const [viewHighPrice, setViewHighPrice] = useState();
+  const [inputPrice, setInputPrice] = useState();
+
+  // useRecoilState 수정할 때 제목, 내용, 가격 데이터 받아가기
+  const [detailModifyPostTitle, setDetailModifyPostTitle] = useRecoilState(postTitle);
+  const [detailModifyPostBody, setDetailModifyPostBody] = useRecoilState(postBody);
+  const [detailModifyPostLowPrice, setDetailModifyPostLowPrice] = useRecoilState(postPrice);
+
+  // useQuery GET 상세 페이지 정보 가져오기
   const { data } = useQuery(['DetailData'], () => ReadData(id), {
-    onSuccess: () => {},
+    onSuccess: () => {
+      // 입찰가 콤마찍기용
+      const createA = data.data.createdAt;
+      const createB = data.data.createdAt;
+      const createASlice = createA.slice(0, 10);
+      const createBSlice = createB.slice(11, 19);
+
+      const modifiedA = data.data.modifiedAt;
+      const modifiedB = data.data.modifiedAt;
+      const modifiedASlice = modifiedA.slice(0, 10);
+      const modifiedBSlice = modifiedB.slice(11, 19);
+
+      setCreateData(createASlice + ' ' + createBSlice);
+      setModifiedData(modifiedASlice + ' ' + modifiedBSlice);
+
+      const createLowPrice = data.data.lowPrice;
+      const createHighPrice = data.data.highPrice;
+
+      const commaLowPrice = createLowPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+      const commaHighPrice = createHighPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+
+      setViewLowPrice(commaLowPrice);
+      setViewHighPrice(commaHighPrice);
+    },
   });
-  console.log(data);
 
   // onChange 댓글 입력 정보 담기
   const onCommentInputHandler = (event) => {
@@ -37,10 +73,9 @@ export default function Detail() {
   const onPriceInputHandler = (event) => {
     const { name, value } = event.target;
     setPrice({ [name]: value });
-    console.log(price);
   };
 
-  // useMuation 댓글 보내기
+  // useMuation POST 댓글 입력
   const { mutate: commentMutate } = useMutation(RequestCommentInput, {
     onSuccess: () => {
       queryClient.invalidateQueries(['DetailData']);
@@ -52,31 +87,37 @@ export default function Detail() {
     commentMutate({ id, comment });
   };
 
-  // useMuation 댓글 보내기
+  // useMuation 입찰하기
   const { mutate: PriceInputMutate } = useMutation(RequestPriceInput, {
     onSuccess: () => {
       queryClient.invalidateQueries(['DetailData']);
     },
+    onError: () => {
+      alert('입찰 최대 가격보다 입찰가격이 낮습니다.');
+    },
   });
 
-  // 댓글 입력 버튼
+  // 입찰하기 버튼
   const onPriceInput = (id, price) => {
     PriceInputMutate({ id, price });
   };
 
-  // useMuation 낙찰
+  // useMuation POST 낙찰하기
   const { mutate: SuccessBidMutate } = useMutation(() => RequestSuccessBidInput(id), {
     onSuccess: () => {
       queryClient.invalidateQueries(['DetailData']);
     },
+    onError: () => {
+      alert('낙찰 불가능');
+    },
   });
 
-  // 낙찰
+  // 낙찰하기 버튼
   const onSuccessBid = () => {
     SuccessBidMutate();
   };
 
-  // useMuation 게시글 삭제
+  // useMuation DELETE 게시글 삭제
   const { mutate: DeletePostMutate } = useMutation(() => RequestDeletePost(id), {
     onSuccess: (temp) => {
       queryClient.invalidateQueries(['DetailData']);
@@ -85,7 +126,7 @@ export default function Detail() {
     },
     onError: (temp) => {
       console.log('ErrorDeletePost', temp);
-      onErrorPost();
+      alert('삭제 불가능');
     },
   });
 
@@ -99,12 +140,8 @@ export default function Detail() {
     alert('삭제 성공');
     navigate('/');
   };
-  // 게시글 삭제 실패
-  const onErrorPost = () => {
-    alert('삭제 실패');
-  };
 
-  // useMuation 관심있는 상품 등록
+  // useMuation POST 관심있는 상품 등록
   const { mutate: LikePostMutate } = useMutation(() => RequestLikePost(id), {
     onSuccess: (temp) => {
       queryClient.invalidateQueries(['DetailData']);
@@ -112,56 +149,89 @@ export default function Detail() {
     },
   });
 
-  // 관심등록 버튼
+  // 관심있는 상품 버튼
   const onLikePost = () => {
     LikePostMutate();
   };
 
   // 수정하기 버튼
-  const onModifyPost = (id) => {
+  const onModifyPost = (title, content, lowPrice) => {
+    const bucketTitle = title;
+    const bucketContent = content;
+    const bucketLowPrice = lowPrice;
+    setDetailModifyPostTitle(bucketTitle);
+    setDetailModifyPostBody(bucketContent);
+    setDetailModifyPostLowPrice(bucketLowPrice);
+
     navigate(`/productmodify/${id}`);
   };
 
-  // useMuation 댓글 삭제
-  const { mutate: DeleteCommentMutate } = useMutation(() => RequestDeletePost(id), {
+  // useMuation DELETE 댓글 삭제
+  const { mutate: DeleteCommentMutate } = useMutation(RequestPostCommentDelete, {
     onSuccess: (temp) => {
       queryClient.invalidateQueries(['DetailData']);
       console.log('SuccessDeleteComment', temp);
-      // onSuccessPost();
+      alert('삭제 성공');
     },
     onError: (temp) => {
       console.log('ErrorDeleteComment', temp);
-      onErrorPost();
+      alert('삭제 실패');
     },
   });
 
   // 댓글삭제 버튼
   const onDeleteComment = (id, commentid) => {
-    DeleteCommentMutate(id, commentid);
+    DeleteCommentMutate({ id, commentid });
+  };
+
+  // useMuation PUT 댓글 수정
+  const { mutate: ModifyCommentMutate } = useMutation(RequestPostCommentModify, {
+    onSuccess: (temp) => {
+      queryClient.invalidateQueries(['DetailData']);
+      alert('수정 성공');
+    },
+    onError: (temp) => {
+      alert('수정 실패');
+    },
+  });
+
+  // 댓글수정 버튼
+  const onModifyComment = (id, commentid) => {
+    const commentModify = prompt('수정할 댓글 내용을 입력하세요');
+    const finalCommentModify = { comment: commentModify };
+    console.log(finalCommentModify);
+    ModifyCommentMutate({ id, commentid, finalCommentModify });
   };
 
   return (
     <>
+      <StGap />
       {data !== undefined ? (
         <StDetailContainer>
           <StDetailBox>
             <StDetailLeftBox>
-              <StDetailImage src={`https://upload.wikimedia.org/wikipedia/ko/thumb/d/d4/%ED%8E%AD%EC%88%98.jpg/300px-%ED%8E%AD%EC%88%98.jpg`}></StDetailImage>
+              <StDetailImage src={`https://jaesa-bucket.s3.ap-northeast-2.amazonaws.com/${data.data.path}`}></StDetailImage>
 
               <StDetailPriceBox>
-                <StDetailMin>최저 입찰가 : {data.data.lowPrice}원</StDetailMin>
-                <StDetailMax>현재 최대 입찰가 : {data.data.highPrice}원</StDetailMax>
+                <StDetailMin>최저 입찰가 : {viewLowPrice}원</StDetailMin>
+                <StDetailMax>현재 최대 입찰가 : {viewHighPrice}원</StDetailMax>
               </StDetailPriceBox>
 
               <StDetailInputBox>
-                <StDetailInputPrice onChange={onPriceInputHandler} name='biddingPrice' type={`number`} placeholder={`입찰가격 입력...`}></StDetailInputPrice>
-                <StDetailBidding
-                  onClick={() => {
-                    onPriceInput(id, price);
-                  }}
-                >
-                  입찰하기
-                </StDetailBidding>
+                {data.data.isSold === false ? (
+                  <>
+                    <StDetailInputPrice value={inputPrice} onChange={onPriceInputHandler} name='biddingPrice' type={`number`} placeholder={`입찰가격 입력...`}></StDetailInputPrice>
+                    <StDetailBidding
+                      onClick={() => {
+                        onPriceInput(id, price);
+                      }}
+                    >
+                      입찰하기
+                    </StDetailBidding>
+                  </>
+                ) : (
+                  <StDetailSuccessBid>낙찰 완료</StDetailSuccessBid>
+                )}
               </StDetailInputBox>
             </StDetailLeftBox>
 
@@ -172,30 +242,36 @@ export default function Detail() {
                     <b>ID : {data.data.username}</b>
                   </StDetailId>
                 </StDetailId>
-
-                <StDetailIdBtnBox>
-                  <StDetailIdBtn onClick={() => onSuccessBid(id)}>낙찰하기</StDetailIdBtn>
-                  <p>{'\u00A0'}</p>
-                  <StDetailIdBtn onClick={() => onModifyPost(id)}>수정하기</StDetailIdBtn>
-                  <p>{'\u00A0'}</p>
-                  <StDetailIdBtn onClick={() => onDeletePost(id)}>삭제하기</StDetailIdBtn>
-                </StDetailIdBtnBox>
+                {localStorage.getItem('myID') === data.data.username ? (
+                  <StDetailIdBtnBox>
+                    <StDetailIdBtn onClick={() => onSuccessBid(id)}>낙찰하기</StDetailIdBtn>
+                    <p>{'\u00A0'}</p>
+                    <StDetailIdBtn onClick={() => onModifyPost(data.data.title, data.data.content, data.data.lowPrice)}>수정하기</StDetailIdBtn>
+                    <p>{'\u00A0'}</p>
+                    <StDetailIdBtn onClick={() => onDeletePost(id)}>삭제하기</StDetailIdBtn>
+                  </StDetailIdBtnBox>
+                ) : null}
               </StDetailIdBox>
 
               <StLine />
               <StDetailBodyBox>
                 <StDetailBodyTitleBox>
                   <StDetailBodyTitle>{data.data.title}</StDetailBodyTitle>
-                  <StDetailBodyTitleLike
-                    onClick={() => {
-                      onLikePost();
-                    }}
-                  >
-                    좋아요
-                  </StDetailBodyTitleLike>
+                  <StDetailBodyLikeBox>
+                    <StDetailBodyLikeBtn
+                      onClick={() => {
+                        onLikePost();
+                      }}
+                    >
+                      Like + {data.data.likeCnt}
+                    </StDetailBodyLikeBtn>
+                  </StDetailBodyLikeBox>
                 </StDetailBodyTitleBox>
 
                 <StDetailBody>{data.data.content}</StDetailBody>
+                <StDetailBodyBiddingCnt>현재 입찰중인 유저 : {data.data.participants.length}</StDetailBodyBiddingCnt>
+                <StDetailBodyCreateDate>게시글 생성 날짜 : {createData}</StDetailBodyCreateDate>
+                <StDetailBodyModifyDate>게시글 수정 날짜 : {modifiedData}</StDetailBodyModifyDate>
                 <StLine />
                 <StDetailCommentList>
                   {data !== undefined
@@ -203,7 +279,12 @@ export default function Detail() {
                         return (
                           <StDetailComment>
                             <b>{comments.username}</b> {comments.comment}
-                            <StDetailCommentDelete onClick={() => onDeleteComment(id, comments.commentid)}>삭제</StDetailCommentDelete>
+                            {localStorage.getItem('myID') === comments.username ? (
+                              <>
+                                <StDetailCommentModify onClick={() => onModifyComment(id, comments.id)}>수정</StDetailCommentModify>
+                                <StDetailCommentDelete onClick={() => onDeleteComment(id, comments.id)}>삭제</StDetailCommentDelete>{' '}
+                              </>
+                            ) : null}
                           </StDetailComment>
                         );
                       })
@@ -228,6 +309,10 @@ export default function Detail() {
   );
 }
 
+const StGap = styled.div`
+  margin-top: 120px;
+`;
+
 // 전체 박스 컨테이너
 const StDetailContainer = styled.div`
   margin: 0 auto;
@@ -237,8 +322,8 @@ const StDetailContainer = styled.div`
 const StDetailBox = styled.div`
   border: 1px solid #dbdbdb;
   border-radius: 5px;
-  width: 1007px;
-  height: 682px;
+  width: 1000px;
+  height: 684px;
   margin-top: 40px;
   display: flex;
   flex-direction: row;
@@ -278,6 +363,7 @@ const StDetailMin = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  cursor: default;
 `;
 
 // 왼쪽 박스 최대가
@@ -288,8 +374,10 @@ const StDetailMax = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  cursor: default;
 `;
 
+// 입찰하기란 박스
 const StDetailInputBox = styled.div`
   display: flex;
   flex-direction: row;
@@ -314,6 +402,23 @@ const StDetailBidding = styled.div`
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  &:hover {
+    background-color: #02343f;
+  }
+`;
+
+// 낙찰 완료
+const StDetailSuccessBid = styled.div`
+  width: 100%;
+  height: 100%;
+  background-color: #ed6f63;
+  color: #2d2926;
+  font-size: 30px;
+  font-weight: bold;
+  display: flex;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
 `;
 
 // 디테일 박스 오른쪽 박스
@@ -335,23 +440,35 @@ const StDetailId = styled.div`
   margin-left: 7px;
   display: flex;
   align-items: center;
+  cursor: default;
 `;
 
-// 오른쪽 박스 ID란 수정하기/삭제하기 버튼 박스
+// 오른쪽 박스 ID란 낙찰하기/수정하기/삭제하기 버튼 박스
 const StDetailIdBtnBox = styled.div`
   display: flex;
-  border: 1px solid #dbdbdb;
+  margin-left: 45px;
 `;
 
 // 오른쪽 ID ID란 수정하기/삭제하기
 const StDetailIdBtn = styled.button`
   border: 1px solid #dbdbdb;
+  height: 25px;
+  width: 70px;
+  background-color: #fbeaeb;
+  border-radius: 15px;
+  cursor: pointer;
+  &:hover {
+    background-color: #2e3c7e;
+    color: #fbeaeb;
+  }
 `;
 
 // 오른쪽 Body란 Body 박스
 const StDetailBodyBox = styled.div``;
 
+// 오른쪽 Box란 Title 박스
 const StDetailBodyTitleBox = styled.div`
+  width: 400px;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -360,15 +477,58 @@ const StDetailBodyTitleBox = styled.div`
 
 // 오른쪽 Body란 Title 박스
 const StDetailBodyTitle = styled.p`
+  width: 75%;
   margin-left: 14px;
   margin-top: 10px;
   font-weight: bold;
   font-size: 20px;
+  cursor: default;
 `;
 
-const StDetailBodyTitleLike = styled.button`
-  margin-right: 270px;
-  margin-top: 11px;
+const StDetailBodyLikeBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 130px;
+  margin-top: 3px;
+`;
+// 오른쪽 Body란 좋아요 버튼
+const StDetailBodyLikeBtn = styled.div`
+  height: 25px;
+  margin-top: 10px;
+  width: 65px;
+  border: 1px solid black;
+  border-radius: 25px;
+  font-size: 14px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #ffe8f5;
+  color: #9000ff;
+  cursor: pointer;
+  &:hover {
+    background-color: #9000ff;
+    color: #ffe8f5;
+  }
+`;
+
+const StDetailBodyBiddingCnt = styled.p`
+  margin-top: 2px;
+  margin-left: 13px;
+  font-size: 11px;
+`;
+
+const StDetailBodyCreateDate = styled.p`
+  margin-top: 2px;
+  margin-left: 13px;
+  font-size: 11px;
+`;
+
+const StDetailBodyModifyDate = styled.p`
+  margin-top: 2px;
+  margin-left: 13px;
+  font-size: 11px;
+  margin-bottom: 10px;
 `;
 
 // 오른쪽 Body란
@@ -376,12 +536,13 @@ const StDetailBody = styled.div`
   margin-left: 14px;
   margin-top: 10px;
   margin-bottom: 10px;
+  cursor: default;
 `;
 
 // 오른쪽 Body란 댓글리스트
 const StDetailCommentList = styled.ul`
   width: 400px;
-  height: 455px;
+  height: 395px;
   overflow-y: auto;
   overflow-x: hidden;
   word-break: break-all;
@@ -397,22 +558,44 @@ const StDetailComment = styled.li`
   overflow-y: auto;
   overflow-x: hidden;
   word-break: break-all;
+  cursor: default;
 `;
 
-const StDetailCommentDelete = styled.button``;
+// 오른쪽 Body란 댓글 삭제
+const StDetailCommentDelete = styled.button`
+  margin-left: 5px;
+  border: none;
+  color: #64c8fa;
+  cursor: pointer;
+  &:hover {
+    color: #0928f2;
+  }
+`;
+
+// 오른쪽 Body란 댓글 수정
+const StDetailCommentModify = styled.button`
+  margin-left: 5px;
+  border: none;
+  color: #64c8fa;
+  cursor: pointer;
+  &:hover {
+    color: #0928f2;
+  }
+`;
 
 // 오른쪽 Input란 박스
 const StCommentInputBox = styled.div`
   display: flex;
   flex-direction: row;
-  margin-top: 58px;
+  margin-top: 45px;
 `;
 
 // 오른쪽 Input란 Input
 const StCommentInput = styled.input`
   border: 1px solid #dbdbdb;
-  width: 300px;
+  width: 400px;
   height: 49px;
+  margin-top: 3.1px;
 `;
 
 // 오른쪽 Input란 버튼
@@ -420,68 +603,17 @@ const StCommentInputBtn = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #50586c;
-  color: white;
-  width: 99px;
+  background-color: #e2d3f3;
+  color: #013dc4;
+  font-weight: bold;
+  width: 100px;
+  height: 50px;
+  margin-top: 3px;
   cursor: pointer;
+  border: 1px solid #dbdbdb;
+
+  &:hover {
+    background-color: #013dc4;
+    color: #e2d3f3;
+  }
 `;
-
-{
-  /* <StDetailContainer>
-        <StDetailBox>
-          <StDetailLeftBox>
-            <StDetailImage src={`https://upload.wikimedia.org/wikipedia/ko/thumb/d/d4/%ED%8E%AD%EC%88%98.jpg/300px-%ED%8E%AD%EC%88%98.jpg`}></StDetailImage>
-
-            <StDetailPriceBox>
-              <StDetailMin>최저 입찰가 : 1,200원</StDetailMin>
-              <StDetailMax>현재 최대 입찰가 : 1,000,000원</StDetailMax>
-            </StDetailPriceBox>
-
-            <StDetailPriceBox>
-              <StDetailInputPrice type={`number`} placeholder={`입찰가격 입력...`}></StDetailInputPrice>
-              <StDetailBidding>입찰하기</StDetailBidding>
-            </StDetailPriceBox>
-          </StDetailLeftBox>
-
-          <StDetailRightBox>
-            <StDetailIdBox>
-              <StDetailId>
-                <StDetailId>
-                  <b>ID : 해물탕좋아해요</b>
-                </StDetailId>
-              </StDetailId>
-
-              <StDetailIdBtnBox>
-                <StDetailIdBtn>수정하기</StDetailIdBtn>
-                <p>{'\u00A0'}</p>
-                <StDetailIdBtn>삭제하기</StDetailIdBtn>
-              </StDetailIdBtnBox>
-            </StDetailIdBox>
-
-            <StLine />
-            <StDetailBodyBox>
-              <StDetailBody>
-                길가다 주운 펭수 팝니다. <br />
-                밥은 주로 송로버섯을 먹습니다. <br />
-                결벽증 있습니다. <br />
-                먼지 하나라도 발견하면 집안에서 구르기 합니다. <br />
-                <br />
-              </StDetailBody>
-              <StLine />
-              <StDetailCommentList>
-                <StDetailComment>
-                  <b>북극곰</b> 맛있겠다ㅋㅋ
-                </StDetailComment>
-                <StDetailComment>
-                  <b>조류심리학과박사</b> 100만원은 너무 비싼데
-                </StDetailComment>
-              </StDetailCommentList>
-              <StCommentInputBox>
-                <StCommentInput placeholder={`\u00A0댓글 입력...`}></StCommentInput>
-                <StCommentInputBtn>댓글등록</StCommentInputBtn>
-              </StCommentInputBox>
-            </StDetailBodyBox>
-          </StDetailRightBox>
-        </StDetailBox>
-      </StDetailContainer> */
-}

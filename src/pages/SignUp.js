@@ -55,28 +55,35 @@ export default function SignUp() {
   };
 
   return (
-    <StSignUpBoxContainer>
-      <StSignUpPTag>ID</StSignUpPTag>
-      <StSignUpIdInput type={'text'} name='username' onChange={onIdChangeHandler}></StSignUpIdInput>
-      <StSignUpPTag>PASSWORD</StSignUpPTag>
-      <StSignUpPasswordInput type={'password'} name='password' onChange={onPasswordChangeHandler} maxLength='12'></StSignUpPasswordInput>
-      <StSignUpPasswordErrorP>대소문자, 숫자, 특수문자 포함 8자 이상</StSignUpPasswordErrorP>
-      <StSignUpPTag>PASSWORD 확인</StSignUpPTag>
-      <StSignUpPasswordCheckInput type={'password'} name='passwordConfirm' onChange={onPasswordConfirmChangeHandler} maxLength='12'></StSignUpPasswordCheckInput>
+    <>
+      <StGap />
+      <StSignUpBoxContainer>
+        <StSignUpPTag>ID</StSignUpPTag>
+        <StSignUpIdInput type={'text'} name='username' onChange={onIdChangeHandler}></StSignUpIdInput>
+        <StSignUpPTag>PASSWORD</StSignUpPTag>
+        <StSignUpPasswordInput type={'password'} name='password' onChange={onPasswordChangeHandler} maxLength='12'></StSignUpPasswordInput>
+        <StSignUpPasswordErrorP>대소문자, 숫자, 특수문자 포함 8자 이상</StSignUpPasswordErrorP>
+        <StSignUpPTag>PASSWORD 확인</StSignUpPTag>
+        <StSignUpPasswordCheckInput type={'password'} name='passwordConfirm' onChange={onPasswordConfirmChangeHandler} maxLength='12'></StSignUpPasswordCheckInput>
 
-      <StSignUpErrorP>{SignUpError}</StSignUpErrorP>
-      <StSignUpBtn
-        onClick={() => {
-          {
-            password === passwordCheck ? AdduserInfo(userInfo) : setSignUpError('회원가입 실패');
-          }
-        }}
-      >
-        회원등록
-      </StSignUpBtn>
-    </StSignUpBoxContainer>
+        <StSignUpErrorP>{SignUpError}</StSignUpErrorP>
+        <StSignUpBtn
+          onClick={() => {
+            {
+              password === passwordCheck ? AdduserInfo(userInfo) : setSignUpError('회원가입 실패');
+            }
+          }}
+        >
+          회원등록
+        </StSignUpBtn>
+      </StSignUpBoxContainer>
+    </>
   );
 }
+
+const StGap = styled.div`
+  margin-top: 120px;
+`;
 
 const StSignUpBoxContainer = styled.div`
   width: 400px;
