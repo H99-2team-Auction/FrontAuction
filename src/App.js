@@ -6,11 +6,13 @@ import { useRecoilState } from 'recoil';
 import { userID } from './store/store';
 function App() {
   const [recoilAppId, setRecoilAppId] = useRecoilState(userID);
+  const [AppLogin, setAppLogin] = useRecoilState(isLogin);
+
   useEffect(() => {
     const myid = localStorage.getItem('myID');
     setRecoilAppId(myid);
   });
-  const [AppLogin, setAppLogin] = useRecoilState(isLogin);
+
   useEffect(() => {
     if (localStorage.getItem('Access_Token') !== null) {
       setAppLogin(true);

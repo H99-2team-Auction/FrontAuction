@@ -30,10 +30,6 @@ export default function Home() {
     },
   });
 
-  useEffect(() => {
-    queryClient.invalidateQueries(['HomeData']);
-  }, homeData);
-
   return (
     <>
       <StPostContainer>
