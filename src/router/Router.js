@@ -7,7 +7,7 @@ import Detail from '../pages/Detail';
 import Mypage from '../pages/Mypage';
 import SuccessBid from '../pages/mypage/Successbid';
 import Bidding from '../pages/mypage/Bidding';
-import LikeProduct from '../pages/mypage/Likeproduct';
+import LikeProduct from '../pages/mypage/LikeProduct';
 import ProductRegist from '../pages/ProductRegist';
 import ProductModify from '../pages/ProductModify';
 
